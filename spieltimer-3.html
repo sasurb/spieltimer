@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="de">
 <head>
 <meta charset="UTF-8">
@@ -41,14 +41,12 @@
     background-clip: text;
     margin-top: 8px;
   }
-
   .subtitle {
     font-size: 11px; color: rgba(255,255,255,0.5);
     text-transform: uppercase; letter-spacing: 2px;
     text-align: center;
   }
 
-  /* ========== Inputs / Buttons ========== */
   input[type="text"] {
     width: 100%;
     padding: 16px 18px;
@@ -62,6 +60,7 @@
     text-align: center;
     letter-spacing: 1px;
     -webkit-user-select: text; user-select: text;
+    -webkit-appearance: none; appearance: none;
   }
   input[type="text"]:focus {
     border-color: rgba(167,139,250,0.6);
@@ -85,12 +84,14 @@
     cursor: pointer;
     transition: transform 0.1s, box-shadow 0.2s, opacity 0.2s;
     color: #fff;
+    -webkit-appearance: none; appearance: none;
+    touch-action: manipulation;
   }
   .btn-primary {
     padding: 18px;
     font-size: 15px;
     background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%);
-    box-shadow: 0 6px 24px rgba(167,139,250,0.4);
+    box-shadow: 0 6px 24px rgba(167, 139, 250, 0.45);
   }
   .btn-secondary {
     padding: 18px;
@@ -109,9 +110,7 @@
     transform: scale(0.97);
   }
   .btn-primary:disabled, .btn-next:disabled {
-    opacity: 0.4;
-    box-shadow: none;
-    cursor: not-allowed;
+    opacity: 0.4; box-shadow: none; cursor: not-allowed;
   }
 
   .divider {
@@ -123,7 +122,6 @@
     margin: 4px 0;
   }
 
-  /* ========== Welcome screen ========== */
   #screen-welcome {
     justify-content: center;
     gap: 16px;
@@ -132,20 +130,12 @@
     width: 100%;
   }
 
-  /* ========== Lobby ========== */
   .room-code-display {
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.1);
     border-radius: 18px;
     padding: 16px;
     text-align: center;
-  }
-  .room-code-label {
-    font-size: 11px;
-    color: rgba(255,255,255,0.5);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 6px;
   }
   .room-code-value {
     font-size: 38px;
@@ -155,14 +145,6 @@
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     background-clip: text;
     padding-left: 12px;
-  }
-
-  .section-label {
-    font-size: 11px;
-    color: rgba(255,255,255,0.5);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    padding: 0 4px;
   }
 
   .player-list {
@@ -195,56 +177,32 @@
     font-size: 13px; font-weight: 700;
     color: rgba(255,255,255,0.7);
   }
-  .player-row .name {
-    flex: 1;
-    font-size: 16px;
-    font-weight: 500;
-  }
-  .player-row .me-tag {
-    font-size: 10px;
-    color: #a78bfa;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    margin-left: 6px;
-  }
-  .reorder-btns {
-    display: flex; gap: 4px;
-  }
+
+  .reorder-btns { display: flex; gap: 4px; }
   .reorder-btns button {
     width: 36px; height: 36px;
     border: 1px solid rgba(255,255,255,0.15);
     background: rgba(255,255,255,0.05);
-    border-radius: 10px;
-    color: #fff;
-    font-size: 16px;
-    cursor: pointer;
+    border-radius: 10px; color: #fff; font-size: 16px;
+    cursor: pointer; touch-action: manipulation;
   }
-  .reorder-btns button:disabled {
-    opacity: 0.25;
-  }
-  .reorder-btns button:active:not(:disabled) {
-    background: rgba(255,255,255,0.12);
-  }
+  .reorder-btns button:disabled { opacity: 0.25; }
+  .reorder-btns button.kick { color: #f87171; font-size: 18px; }
 
   .slider-container {
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 14px;
-    padding: 12px 16px;
+    border-radius: 14px; padding: 12px 16px;
   }
   .slider-label {
     display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 8px;
-    font-size: 11px;
-    color: rgba(255,255,255,0.6);
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
+    margin-bottom: 8px; font-size: 11px; color: rgba(255,255,255,0.6);
+    text-transform: uppercase; letter-spacing: 1.5px;
   }
   .slider-value { color: #a78bfa; font-weight: 600; font-size: 14px; }
   input[type="range"] {
     -webkit-appearance: none; appearance: none;
-    width: 100%; height: 5px;
-    background: rgba(255,255,255,0.1);
+    width: 100%; height: 5px; background: rgba(255,255,255,0.1);
     border-radius: 3px; outline: none;
   }
   input[type="range"]::-webkit-slider-thumb {
@@ -254,174 +212,85 @@
     border-radius: 50%; cursor: pointer;
     box-shadow: 0 2px 8px rgba(167,139,250,0.5);
   }
-  input[type="range"]::-moz-range-thumb {
-    width: 24px; height: 24px;
-    background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%);
-    border-radius: 50%; cursor: pointer; border: none;
-    box-shadow: 0 2px 8px rgba(167,139,250,0.5);
-  }
 
-  .wait-message {
-    text-align: center;
-    padding: 18px;
-    color: rgba(255,255,255,0.6);
-    font-size: 14px;
-    letter-spacing: 1px;
-  }
+  .current-banner { text-align: center; padding: 8px 0 4px; }
+  .current-banner .lbl { font-size: 10px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 4px; }
+  .current-banner .player-name-big { font-size: 30px; font-weight: 700; background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 
-  /* ========== Game ========== */
-  .current-banner {
-    text-align: center;
-    padding: 8px 0 4px;
-  }
-  .current-banner .lbl {
-    font-size: 10px;
-    color: rgba(255,255,255,0.5);
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    margin-bottom: 4px;
-  }
-  .current-banner .player-name-big {
-    font-size: 30px;
-    font-weight: 700;
-    background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
+  .timer-area { flex: 1 1 auto; display: flex; align-items: center; justify-content: center; min-height: 0; }
+  .timer-container { position: relative; width: min(65vw, 240px); aspect-ratio: 1; display: flex; align-items: center; justify-content: center; }
+  .progress-ring { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+  .progress-ring-bg { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 7; }
+  .progress-ring-fill { fill: none; stroke: url(#grad); stroke-width: 7; stroke-linecap: round; transition: stroke-dashoffset 0.3s linear; filter: drop-shadow(0 0 8px rgba(167,139,250,0.5)); }
+  .time-text { font-size: clamp(44px, 12vw, 64px); font-weight: 200; font-variant-numeric: tabular-nums; letter-spacing: -2px; text-shadow: 0 0 24px rgba(167,139,250,0.3); }
 
-  .timer-area {
-    flex: 1 1 auto;
-    display: flex;
-    align-items: center;
+  .player-pills { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; padding: 0 4px; margin-bottom: 4px; }
+  .player-pill { padding: 6px 12px; border-radius: 100px; font-size: 12px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); }
+  .player-pill.current { background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%); color: #fff; border-color: transparent; font-weight: 600; }
+
+  .btn-next { 
+    flex: 0 0 auto;
+    padding: 32px; 
+    font-size: 26px; 
+    background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%); 
+    box-shadow: 0 8px 32px rgba(167, 139, 250, 0.45); 
+    min-height: 120px;
+    border-radius: 24px;
+    margin-top: 8px;
+  }
+  .waiting-banner { 
+    flex: 0 0 auto;
+    padding: 32px; 
+    text-align: center; 
+    background: rgba(255,255,255,0.04); 
+    border: 2px dashed rgba(255,255,255,0.12); 
+    border-radius: 24px; 
+    color: rgba(255,255,255,0.6); 
+    font-size: 16px; 
+    letter-spacing: 1px; 
+    min-height: 120px; 
+    display: flex; 
+    align-items: center; 
     justify-content: center;
-    min-height: 0;
-  }
-  .timer-container {
-    position: relative;
-    width: min(70vw, 260px);
-    aspect-ratio: 1;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .progress-ring {
-    position: absolute; inset: 0;
-    width: 100%; height: 100%;
-    transform: rotate(-90deg);
-  }
-  .progress-ring-bg {
-    fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 7;
-  }
-  .progress-ring-fill {
-    fill: none; stroke: url(#grad); stroke-width: 7;
-    stroke-linecap: round;
-    transition: stroke-dashoffset 0.3s linear;
-    filter: drop-shadow(0 0 8px rgba(167,139,250,0.5));
-  }
-  .time-text {
-    font-size: clamp(48px, 14vw, 72px);
-    font-weight: 200;
-    font-variant-numeric: tabular-nums;
-    letter-spacing: -2px;
-    text-shadow: 0 0 24px rgba(167,139,250,0.3);
+    margin-top: 8px;
   }
 
-  .player-pills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    justify-content: center;
-    padding: 0 4px;
-  }
-  .player-pill {
-    padding: 6px 12px;
-    border-radius: 100px;
-    font-size: 12px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: rgba(255,255,255,0.6);
-  }
-  .player-pill.current {
-    background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%);
-    color: #fff;
-    border-color: transparent;
-    font-weight: 600;
-  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+  .time-text.finished { animation: pulse 0.8s ease-in-out infinite; background: linear-gradient(135deg, #f87171 0%, #fbbf24 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 
-  .btn-next {
-    padding: 26px;
-    font-size: 22px;
-    background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%);
-    box-shadow: 0 6px 28px rgba(167,139,250,0.45);
-    min-height: 100px;
-  }
-
-  .waiting-banner {
-    padding: 26px;
-    text-align: center;
-    background: rgba(255,255,255,0.04);
-    border: 1px dashed rgba(255,255,255,0.12);
-    border-radius: 16px;
-    color: rgba(255,255,255,0.6);
-    font-size: 14px;
-    letter-spacing: 1px;
-    min-height: 100px;
-    display: flex; align-items: center; justify-content: center;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.55; }
-  }
-  .time-text.finished {
-    animation: pulse 0.8s ease-in-out infinite;
-    background: linear-gradient(135deg, #f87171 0%, #fbbf24 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  /* ========== Status / Errors ========== */
-  #statusBar {
-    position: fixed;
-    top: env(safe-area-inset-top, 8px);
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(220,38,38,0.95);
-    color: #fff;
-    padding: 8px 16px;
-    border-radius: 100px;
-    font-size: 13px;
-    z-index: 100;
-    display: none;
-    max-width: 90vw;
-    text-align: center;
-  }
+  #statusBar { position: fixed; top: env(safe-area-inset-top, 8px); left: 50%; transform: translateX(-50%); background: rgba(220,38,38,0.95); color: #fff; padding: 8px 16px; border-radius: 100px; font-size: 13px; z-index: 100; display: none; max-width: 90vw; text-align: center; }
   #statusBar.show { display: block; }
   #statusBar.info { background: rgba(96,165,250,0.95); }
+  #statusBar.success { background: rgba(34,197,94,0.95); }
+
+  #connectionDot { position: fixed; top: env(safe-area-inset-top, 8px); right: 12px; width: 10px; height: 10px; border-radius: 50%; background: #ef4444; z-index: 99; transition: background 0.3s; box-shadow: 0 0 6px currentColor; }
+  #connectionDot.connected { background: #22c55e; }
+  #connectionDot.connecting { background: #fbbf24; }
 </style>
 </head>
 <body>
 
 <div id="statusBar"></div>
+<div id="connectionDot" title="Verbindungsstatus"></div>
 
-<!-- ============ WELCOME ============ -->
 <div id="screen-welcome" class="screen active">
   <div class="title">Spieltimer</div>
   <div class="subtitle">Mehrspieler-Timer</div>
   <div style="height: 12px"></div>
   <input type="text" id="nameInput" placeholder="Dein Name" maxlength="20" autocomplete="off">
-  <button class="btn-primary" id="btnCreate">Raum erstellen</button>
+  <button class="btn-primary" id="btnCreate" type="button">Raum erstellen</button>
   <div class="divider">oder</div>
   <input type="text" id="codeInput" placeholder="CODE" maxlength="4" autocomplete="off">
-  <button class="btn-secondary" id="btnJoin">Raum beitreten</button>
+  <button class="btn-secondary" id="btnJoin" type="button">Raum beitreten</button>
 </div>
 
-<!-- ============ LOBBY ============ -->
 <div id="screen-lobby" class="screen">
   <div class="title">Spieltimer</div>
   <div class="room-code-display">
-    <div class="room-code-label">Raum-Code</div>
+    <div style="font-size:11px; opacity:0.5; text-transform:uppercase; letter-spacing:2px; margin-bottom:6px;">Raum-Code</div>
     <div class="room-code-value" id="lobbyRoomCode">----</div>
   </div>
-  <div class="section-label">Spieler (Reihenfolge)</div>
+  <div style="font-size:11px; opacity:0.5; text-transform:uppercase; letter-spacing:2px;">Spieler (Reihenfolge)</div>
   <div class="player-list" id="playerList"></div>
 
   <div id="hostControls" style="display:none">
@@ -433,88 +302,74 @@
       <input type="range" id="lobbyDurationSlider" min="10" max="600" step="10" value="300">
     </div>
     <div style="height: 8px"></div>
-    <button class="btn-primary" id="btnStartGame">Spiel starten</button>
+    <button class="btn-primary" id="btnStartGame" type="button">Spiel starten</button>
   </div>
 
   <div id="joinerWait" style="display:none">
-    <div class="wait-message" id="joinerWaitText">Warte auf Spielstart…</div>
+    <div style="text-align:center; padding:18px; color:rgba(255,255,255,0.6);" id="joinerWaitText">Warte auf Spielstart…</div>
   </div>
-
-  <button class="btn-ghost" id="btnLeaveLobby" style="margin-top: auto">Raum verlassen</button>
+  <button class="btn-ghost" id="btnLeaveLobby" type="button" style="margin-top: auto">Raum verlassen</button>
 </div>
 
-<!-- ============ GAME ============ -->
 <div id="screen-game" class="screen">
   <div class="current-banner">
     <div class="lbl">Am Zug</div>
     <div class="player-name-big" id="currentPlayerName">-</div>
   </div>
-
   <div class="timer-area">
     <div class="timer-container">
       <svg class="progress-ring" viewBox="0 0 200 200">
         <defs>
           <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#a78bfa"/>
-            <stop offset="100%" style="stop-color:#60a5fa"/>
+            <stop offset="0%" style="stop-color:#a78bfa"/><stop offset="100%" style="stop-color:#60a5fa"/>
           </linearGradient>
         </defs>
         <circle class="progress-ring-bg" cx="100" cy="100" r="92"/>
-        <circle class="progress-ring-fill" cx="100" cy="100" r="92"
-                stroke-dasharray="578.05" stroke-dashoffset="0"/>
+        <circle class="progress-ring-fill" cx="100" cy="100" r="92" stroke-dasharray="578.05" stroke-dashoffset="0"/>
       </svg>
       <div class="time-text" id="gameTimeText">05:00</div>
     </div>
   </div>
-
   <div class="player-pills" id="gamePlayerPills"></div>
-
-  <button class="btn-next" id="btnNext" style="display:none">Weiter</button>
-  <div class="waiting-banner" id="waitingBanner" style="display:none">
-    Warte auf <span id="waitingForName"></span>…
+  <button class="btn-next" id="btnNext" type="button" style="display:none">Weiter</button>
+  <div class="waiting-banner" id="waitingBanner" style="display:none">Warte auf <span id="waitingForName" style="margin-left:5px; font-weight:bold; color:#a78bfa"></span>…</div>
+  
+  <div style="display: flex; gap: 8px; margin-top: 4px;">
+    <button class="btn-ghost" id="btnHostReset" type="button" style="display:none; flex: 1;">Zurück zur Lobby</button>
+    <button class="btn-ghost" id="btnLeaveGame" type="button" style="display:none; flex: 1;">Spiel verlassen</button>
   </div>
-
-  <button class="btn-ghost" id="btnHostReset" style="display:none">Zurück zur Lobby</button>
 </div>
 
-<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script>
 'use strict';
 
-// ============ State ============
+const NTFY_URL = 'https://ntfy.sh';
+const TOPIC_PREFIX = 'spieltimer-v3'; // Erhöht zur Vermeidung von Cache-Problemen im Browser
 const CIRCUMFERENCE = 2 * Math.PI * 92;
+const STATE_REPUBLISH_MS = 3000;
 
 const app = {
-  myName: '',
-  myPeerId: null,
-  isHost: false,
-  roomCode: null,
-
-  // Synced state (host = authoritative)
-  players: [],          // [{ peerId, name }]
-  duration: 300,        // sekunden pro zug
-  currentIndex: 0,
-  endTimestamp: null,   // host-zeit
-  isRunning: false,
-  isFinished: false,
-  gameStarted: false,
+  myName: '', myPeerId: null, isHost: false, roomCode: null,
+  players: [], duration: 300, currentIndex: 0, endTimestamp: null,
+  isRunning: false, isFinished: false, gameStarted: false
 };
 
-let peer = null;
-let hostConn = null;                // peer-seite
-const peerConns = new Map();        // host-seite: peerId -> DataConnection
-let timeOffset = 0;                 // peerLocal -> hostLocal: hostNow = peerNow + timeOffset
+let wsClient = null;
+let timeOffset = 0;
 let audioCtx = null;
 let alarmTriggered = false;
 let durationBroadcastTimer = null;
+let hostRepublishTimer = null;
+let wakeLock = null;
+let isInJoinPhase = false;
+let joinAckTimer = null;
+let isExplicitLeave = false;
 
 const el = {
-  // Welcome
   nameInput: document.getElementById('nameInput'),
   codeInput: document.getElementById('codeInput'),
   btnCreate: document.getElementById('btnCreate'),
   btnJoin: document.getElementById('btnJoin'),
-  // Lobby
   lobbyRoomCode: document.getElementById('lobbyRoomCode'),
   playerList: document.getElementById('playerList'),
   hostControls: document.getElementById('hostControls'),
@@ -524,7 +379,6 @@ const el = {
   lobbySliderValue: document.getElementById('lobbySliderValue'),
   btnStartGame: document.getElementById('btnStartGame'),
   btnLeaveLobby: document.getElementById('btnLeaveLobby'),
-  // Game
   currentPlayerName: document.getElementById('currentPlayerName'),
   gameTimeText: document.getElementById('gameTimeText'),
   progressRingFill: document.querySelector('.progress-ring-fill'),
@@ -533,13 +387,13 @@ const el = {
   waitingBanner: document.getElementById('waitingBanner'),
   waitingForName: document.getElementById('waitingForName'),
   btnHostReset: document.getElementById('btnHostReset'),
-  // Status
+  btnLeaveGame: document.getElementById('btnLeaveGame'),
   statusBar: document.getElementById('statusBar'),
+  connectionDot: document.getElementById('connectionDot'),
 };
 
 el.progressRingFill.style.strokeDasharray = CIRCUMFERENCE;
 
-// ============ Utilities ============
 function setScreen(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-' + name).classList.add('active');
@@ -547,481 +401,339 @@ function setScreen(name) {
 
 function showStatus(text, kind = 'error', durationMs = 4000) {
   el.statusBar.textContent = text;
-  el.statusBar.className = 'show ' + (kind === 'info' ? 'info' : '');
-  if (durationMs > 0) {
-    setTimeout(() => { el.statusBar.className = ''; }, durationMs);
-  }
+  let cls = 'show';
+  if (kind === 'info') cls += ' info';
+  else if (kind === 'success') cls += ' success';
+  el.statusBar.className = cls;
+  if (durationMs > 0) { setTimeout(() => { if(el.statusBar.textContent === text) el.statusBar.className = ''; }, durationMs); }
 }
 function hideStatus() { el.statusBar.className = ''; }
+function setConnState(state) { el.connectionDot.className = state || ''; }
 
 function formatTime(ms) {
   const s = Math.max(0, Math.ceil(ms / 1000));
-  const m = Math.floor(s / 60);
-  const sec = s % 60;
-  return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+  return `${String(Math.floor(s / 60)).padStart(2,'0')}:${String(s % 60).padStart(2,'0')}`;
 }
-
 function formatDurationLabel(seconds) {
-  const m = Math.floor(seconds / 60);
-  const s = seconds % 60;
-  if (s === 0) return `${m}:00 min`;
-  return `${m}:${String(s).padStart(2,'0')} min`;
+  const m = Math.floor(seconds / 60); const s = seconds % 60;
+  return s === 0 ? `${m}:00 min` : `${m}:${String(s).padStart(2,'0')} min`;
 }
-
 function generateRoomCode() {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let code = '';
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let code = '';
   for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
   return code;
 }
+function generateClientId() { return Math.random().toString(36).slice(2, 14); }
+function getSavedName() { try { return localStorage.getItem('spieltimer.name') || ''; } catch (e) { return ''; } }
+function saveName(name) { try { localStorage.setItem('spieltimer.name', name); } catch (e) {} }
 
-function getSavedName() {
-  try { return localStorage.getItem('spieltimer.name') || ''; } catch (e) { return ''; }
-}
-function saveName(name) {
-  try { localStorage.setItem('spieltimer.name', name); } catch (e) {}
-}
-
-// ============ Audio & Vibration ============
 function ensureAudio() {
-  if (!audioCtx) {
-    try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
-  }
-  if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+  if (!audioCtx) { try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} }
+  if (audioCtx && audioCtx.state === 'suspended') { audioCtx.resume().catch(() => {}); }
 }
 
 function playBeep() {
-  ensureAudio();
-  if (!audioCtx) return;
-  const now = audioCtx.currentTime;
+  ensureAudio(); if (!audioCtx) return; const now = audioCtx.currentTime;
   for (let i = 0; i < 3; i++) {
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
+    const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
     osc.connect(gain); gain.connect(audioCtx.destination);
-    osc.frequency.value = 880; osc.type = 'sine';
-    const t = now + i * 0.4;
-    gain.gain.setValueAtTime(0, t);
-    gain.gain.linearRampToValueAtTime(0.3, t + 0.01);
-    gain.gain.linearRampToValueAtTime(0, t + 0.3);
+    osc.frequency.value = 880; osc.type = 'sine'; const t = now + i * 0.4;
+    gain.gain.setValueAtTime(0, t); gain.gain.linearRampToValueAtTime(0.3, t + 0.01); gain.gain.linearRampToValueAtTime(0, t + 0.3);
     osc.start(t); osc.stop(t + 0.3);
   }
 }
+function vibrate(pattern = [200, 100, 200, 100, 200]) { if (navigator.vibrate) navigator.vibrate(pattern); }
 
-function vibrate(pattern = [200, 100, 200, 100, 200]) {
-  if (navigator.vibrate) navigator.vibrate(pattern);
+async function requestWakeLock() { 
+  if (!app.gameStarted) return;
+  try { 
+    if ('wakeLock' in navigator && !wakeLock) { 
+      wakeLock = await navigator.wakeLock.request('screen'); 
+      wakeLock.addEventListener('release', () => { wakeLock = null; });
+    } 
+  } catch (e) {} 
 }
+async function releaseWakeLock() { try { if (wakeLock) { await wakeLock.release(); wakeLock = null; } } catch (e) {} }
 
-// ============ HOST ============
-function createRoom() {
-  app.isHost = true;
-  tryCreateRoom(0);
-}
-
-function tryCreateRoom(attempt) {
-  if (attempt > 5) {
-    showStatus('Konnte keinen Raum erstellen. Bitte erneut versuchen.');
-    return;
-  }
-  const code = generateRoomCode();
-  const peerId = 'spieltimer-' + code;
-  showStatus('Verbinde…', 'info', 0);
-
-  try { if (peer) peer.destroy(); } catch (e) {}
-
-  peer = new Peer(peerId, { debug: 1 });
-
-  peer.on('open', (id) => {
-    app.myPeerId = id;
-    app.roomCode = code;
-    app.players = [{ peerId: id, name: app.myName }];
-    hideStatus();
-    setScreen('lobby');
-    renderLobby();
-  });
-
-  peer.on('error', (err) => {
-    if (err.type === 'unavailable-id') {
-      try { peer.destroy(); } catch (e) {}
-      tryCreateRoom(attempt + 1);
-    } else {
-      console.error('Peer error:', err);
-      showStatus('Verbindungsfehler: ' + (err.type || 'unbekannt'));
+document.addEventListener('click', () => { ensureAudio(); requestWakeLock(); });
+document.addEventListener('touchend', () => { ensureAudio(); requestWakeLock(); });
+document.addEventListener('visibilitychange', async () => { 
+  if (document.visibilityState === 'visible') { 
+    requestWakeLock();
+    if (app.roomCode && (!wsClient || wsClient.readyState !== WebSocket.OPEN) && !isExplicitLeave) {
+      showStatus('Verbindung wiederherstellen...', 'info', 2000);
+      reconnectNtfy();
     }
-  });
+  } 
+});
 
-  peer.on('connection', (conn) => {
-    setupHostConnection(conn);
-  });
-}
+function connectNtfy(code, isHostFlag, onReady) {
+  setConnState('connecting');
+  isExplicitLeave = false;
+  const topic = `${TOPIC_PREFIX}-${code}`;
+  try { if (wsClient) { wsClient.close(); } } catch (e) {}
 
-function setupHostConnection(conn) {
-  conn.on('open', () => {
-    peerConns.set(conn.peer, conn);
-  });
-  conn.on('data', (msg) => {
-    handleHostReceived(conn.peer, msg, conn);
-  });
-  conn.on('close', () => {
-    peerConns.delete(conn.peer);
-    const wasCurrentPlayer = app.players[app.currentIndex] &&
-                              app.players[app.currentIndex].peerId === conn.peer;
-    app.players = app.players.filter(p => p.peerId !== conn.peer);
-    if (app.gameStarted && app.players.length === 0) {
-      hostResetGame();
-    } else if (app.gameStarted && wasCurrentPlayer) {
-      // Bei Disconnect des aktiven Spielers: zum nächsten
-      app.currentIndex = app.currentIndex % app.players.length;
-      app.endTimestamp = Date.now() + app.duration * 1000;
-      app.isRunning = true; app.isFinished = false;
-      alarmTriggered = false;
-    } else if (app.currentIndex >= app.players.length) {
-      app.currentIndex = 0;
+  wsClient = new WebSocket(`wss://ntfy.sh/${topic}/ws`);
+  let opened = false;
+  const failTimer = setTimeout(() => {
+    if (!opened) { showStatus('Verbindung fehlgeschlagen. Bitte Netz prüfen.'); setConnState(''); }
+  }, 10000);
+
+  wsClient.onopen = () => { opened = true; clearTimeout(failTimer); setConnState('connected'); if(onReady) onReady(); };
+  wsClient.onclose = () => { 
+    setConnState(''); 
+    if (!isExplicitLeave && app.roomCode) {
+      setTimeout(() => reconnectNtfy(), 2000);
     }
-    broadcastState();
-    refreshUI();
-  });
-  conn.on('error', (err) => {
-    console.error('Conn error:', err);
+  };
+  wsClient.onerror = () => { setConnState(''); };
+  wsClient.onmessage = (event) => {
+    let payload; try { payload = JSON.parse(event.data); } catch (e) { return; }
+    if (payload.event === 'message') {
+      let msg; try { msg = JSON.parse(payload.message); } catch (e) { return; }
+      if (!msg) return;
+      if (msg.type === 'state') {
+        if (app.isHost) return;
+        handleStateMessage(msg.state);
+      } else {
+        if (!app.isHost) return;
+        handleActionMessage(msg);
+      }
+    }
+  };
+}
+
+function reconnectNtfy() {
+  if (!app.roomCode || isExplicitLeave) return;
+  connectNtfy(app.roomCode, app.isHost, () => {
+    if (app.isHost) { publishState(); } else { publishAction({ type: 'join', name: app.myName }); }
   });
 }
 
-function handleHostReceived(peerId, msg, conn) {
-  if (msg.type === 'join') {
-    // Doppelte Namen vermeiden
-    let name = msg.name || 'Spieler';
-    if (app.players.find(p => p.peerId === peerId)) return;
-    app.players.push({ peerId, name });
-    broadcastState();
-    renderLobby();
-  } else if (msg.type === 'next') {
+function publishState() {
+  if (!wsClient || wsClient.readyState !== WebSocket.OPEN || isExplicitLeave) return;
+  const snapshot = {
+    players: app.players, duration: app.duration, currentIndex: app.currentIndex,
+    endTimestamp: app.endTimestamp, isRunning: app.isRunning, isFinished: app.isFinished,
+    gameStarted: app.gameStarted, hostTime: Date.now()
+  };
+  fetch(`${NTFY_URL}/${TOPIC_PREFIX}-${app.roomCode}`, { method: 'POST', body: JSON.stringify({ type: 'state', state: snapshot }) }).catch(() => {});
+}
+
+function startHostRepublish() { stopHostRepublish(); hostRepublishTimer = setInterval(() => publishState(), STATE_REPUBLISH_MS); }
+function stopHostRepublish() { if (hostRepublishTimer) { clearInterval(hostRepublishTimer); hostRepublishTimer = null; } }
+
+function publishAction(action) {
+  if (!wsClient || wsClient.readyState !== WebSocket.OPEN) return;
+  const payload = { ...action, from: app.myPeerId, ts: Date.now() };
+  fetch(`${NTFY_URL}/${TOPIC_PREFIX}-${app.roomCode}`, { method: 'POST', body: JSON.stringify(payload) }).catch(() => {});
+}
+
+function handleActionMessage(action) {
+  if (action.type === 'join') {
+    if (!action.from || !action.name) return;
+    if (app.players.find(p => p.peerId === action.from)) { publishState(); return; }
+    if (app.gameStarted) return;
+    app.players.push({ peerId: action.from, name: action.name });
+    publishState(); renderLobby();
+  } else if (action.type === 'next') {
     if (!app.gameStarted) return;
     const cur = app.players[app.currentIndex];
-    if (cur && cur.peerId === peerId) {
-      advanceTurn();
-    }
+    if (cur && cur.peerId === action.from) { advanceTurn(); }
+  } else if (action.type === 'leave') {
+    // EIN SPIELER VERLÄSST DEN RAUM EXPLIZIT (z.B. Button gedrückt) -> JETZT ENTFERNEN
+    removePlayer(action.from);
   }
 }
 
-function broadcastState() {
-  const snapshot = {
-    players: app.players,
-    duration: app.duration,
-    currentIndex: app.currentIndex,
-    endTimestamp: app.endTimestamp,
-    isRunning: app.isRunning,
-    isFinished: app.isFinished,
-    gameStarted: app.gameStarted,
-  };
-  const msg = { type: 'state', state: snapshot, hostTime: Date.now() };
-  peerConns.forEach(conn => {
-    try { conn.send(msg); } catch (e) {}
+function removePlayer(peerId) {
+  const idx = app.players.findIndex(p => p.peerId === peerId); if (idx < 0) return;
+  const wasCurrent = idx === app.currentIndex; app.players.splice(idx, 1);
+  if (app.players.length === 0) { hostResetGame(); return; }
+  if (app.currentIndex >= app.players.length) { app.currentIndex = 0; }
+  if (app.gameStarted && wasCurrent) { app.endTimestamp = Date.now() + app.duration * 1000; app.isRunning = true; app.isFinished = false; alarmTriggered = false; }
+  publishState(); refreshUI();
+}
+
+function handleStateMessage(snapshot) {
+  if (snapshot.closed) { if (isInJoinPhase) return; showStatus('Der Raum wurde vom Host geschlossen.'); leaveRoom(); return; }
+  const prevStarted = app.gameStarted; const prevEndTs = app.endTimestamp;
+  app.players = snapshot.players || []; app.duration = snapshot.duration || 300;
+  app.currentIndex = snapshot.currentIndex || 0; app.endTimestamp = snapshot.endTimestamp || null;
+  app.isRunning = snapshot.isRunning || false; app.isFinished = snapshot.isFinished || false;
+  app.gameStarted = snapshot.gameStarted || false;
+
+  if (snapshot.hostTime) { timeOffset = snapshot.hostTime - Date.now(); }
+  if (app.endTimestamp !== prevEndTs) alarmTriggered = false;
+
+  const meInList = app.players.find(p => p.peerId === app.myPeerId);
+  if (isInJoinPhase) {
+    if (meInList) {
+      isInJoinPhase = false; if (joinAckTimer) { clearTimeout(joinAckTimer); joinAckTimer = null; }
+      hideStatus(); if (app.gameStarted) { ensureAudio(); requestWakeLock(); setScreen('game'); } else { setScreen('lobby'); }
+      refreshUI();
+    }
+    return;
+  }
+  
+  // WICHTIG: Wenn wir kurz die Verbindung verloren haben (meInList fehlt temporär auf dem Server, weil wir im Standby waren),
+  // kicken wir den Spieler NICHT mehr sofort, sondern geben ihm durch den Reconnect 300 Sekunden Zeit, sich wieder anzumelden.
+  if (!meInList) { return; } 
+  
+  if (app.gameStarted && !prevStarted) { ensureAudio(); requestWakeLock(); setScreen('game'); }
+  else if (!app.gameStarted && prevStarted) { releaseWakeLock(); setScreen('lobby'); }
+  refreshUI();
+}
+
+function createRoom() {
+  app.isHost = true; app.myPeerId = generateClientId(); app.roomCode = generateRoomCode();
+  app.players = [{ peerId: app.myPeerId, name: app.myName }];
+  showStatus('Verbinde zum Server...', 'info', 0);
+  connectNtfy(app.roomCode, true, () => {
+    hideStatus(); publishState(); startHostRepublish(); setScreen('lobby'); renderLobby();
   });
 }
 
 function hostStartGame() {
-  if (app.players.length < 1) return;
-  ensureAudio();
-  app.gameStarted = true;
-  app.currentIndex = 0;
-  app.endTimestamp = Date.now() + app.duration * 1000;
-  app.isRunning = true;
-  app.isFinished = false;
-  alarmTriggered = false;
-  broadcastState();
-  setScreen('game');
-  renderGame();
+  if (app.players.length < 1) return; ensureAudio(); requestWakeLock();
+  app.gameStarted = true; app.currentIndex = 0; app.endTimestamp = Date.now() + app.duration * 1000;
+  app.isRunning = true; app.isFinished = false; alarmTriggered = false;
+  publishState(); setScreen('game'); renderGame();
 }
 
 function advanceTurn() {
   app.currentIndex = (app.currentIndex + 1) % app.players.length;
-  app.endTimestamp = Date.now() + app.duration * 1000;
-  app.isRunning = true;
-  app.isFinished = false;
-  alarmTriggered = false;
-  broadcastState();
-  refreshUI();
+  app.endTimestamp = Date.now() + app.duration * 1000; app.isRunning = true; app.isFinished = false; alarmTriggered = false;
+  publishState(); refreshUI();
 }
 
 function hostResetGame() {
-  app.gameStarted = false;
-  app.isRunning = false;
-  app.isFinished = false;
-  app.endTimestamp = null;
-  app.currentIndex = 0;
-  alarmTriggered = false;
-  broadcastState();
-  setScreen('lobby');
-  renderLobby();
+  app.gameStarted = false; app.isRunning = false; app.isFinished = false; app.endTimestamp = null; app.currentIndex = 0; alarmTriggered = false;
+  releaseWakeLock(); publishState(); setScreen('lobby'); renderLobby();
 }
 
 function hostMovePlayer(peerId, direction) {
-  const idx = app.players.findIndex(p => p.peerId === peerId);
-  if (idx < 0) return;
-  const newIdx = idx + direction;
-  if (newIdx < 0 || newIdx >= app.players.length) return;
+  const idx = app.players.findIndex(p => p.peerId === peerId); if (idx < 0) return;
+  const newIdx = idx + direction; if (newIdx < 0 || newIdx >= app.players.length) return;
   [app.players[idx], app.players[newIdx]] = [app.players[newIdx], app.players[idx]];
-  broadcastState();
-  renderLobby();
+  publishState(); renderLobby();
 }
 
-// ============ PEER (joiner) ============
+function hostKickPlayer(peerId) { if (peerId !== app.myPeerId) removePlayer(peerId); }
+
 function joinRoom(code) {
-  app.isHost = false;
-  app.roomCode = code;
-  const hostPeerId = 'spieltimer-' + code;
-  showStatus('Verbinde…', 'info', 0);
-
-  try { if (peer) peer.destroy(); } catch (e) {}
-
-  peer = new Peer({ debug: 1 });
-
-  peer.on('open', (id) => {
-    app.myPeerId = id;
-    hostConn = peer.connect(hostPeerId, { reliable: true });
-
-    let opened = false;
-    const connectTimeout = setTimeout(() => {
-      if (!opened) {
-        showStatus('Raum nicht gefunden oder nicht erreichbar.');
-        try { peer.destroy(); } catch (e) {}
-      }
-    }, 8000);
-
-    hostConn.on('open', () => {
-      opened = true;
-      clearTimeout(connectTimeout);
-      hostConn.send({ type: 'join', name: app.myName });
-      hideStatus();
-      setScreen('lobby');
-      renderLobby();
-    });
-    hostConn.on('data', (msg) => handlePeerReceived(msg));
-    hostConn.on('close', () => {
-      showStatus('Verbindung zum Host verloren.');
-      setScreen('welcome');
-    });
-    hostConn.on('error', (err) => {
-      console.error('Host conn error:', err);
-    });
-  });
-
-  peer.on('error', (err) => {
-    if (err.type === 'peer-unavailable') {
-      showStatus('Raum-Code nicht gefunden.');
-      setScreen('welcome');
-    } else {
-      console.error('Peer error:', err);
-      showStatus('Verbindungsfehler: ' + (err.type || 'unbekannt'));
-    }
+  app.isHost = false; app.myPeerId = generateClientId(); app.roomCode = code; isInJoinPhase = true;
+  showStatus('Verbinde...', 'info', 0);
+  connectNtfy(code, false, () => {
+    joinAckTimer = setTimeout(() => { if (isInJoinPhase) { showStatus('Raum nicht gefunden oder offline.'); leaveRoom(); } }, 10000);
+    setTimeout(() => { if (isInJoinPhase && wsClient && wsClient.readyState === WebSocket.OPEN) { publishAction({ type: 'join', name: app.myName }); } }, 400);
   });
 }
 
-function handlePeerReceived(msg) {
-  if (msg.type === 'state') {
-    const prevEndTs = app.endTimestamp;
-    const prevStarted = app.gameStarted;
-    Object.assign(app, msg.state);
-    if (msg.hostTime) timeOffset = msg.hostTime - Date.now();
-    if (app.endTimestamp !== prevEndTs) alarmTriggered = false;
-
-    if (app.gameStarted && !prevStarted) {
-      ensureAudio();
-      setScreen('game');
-    } else if (!app.gameStarted && prevStarted) {
-      setScreen('lobby');
-    }
-    refreshUI();
+function leaveRoom() {
+  isExplicitLeave = true;
+  releaseWakeLock(); stopHostRepublish(); if (joinAckTimer) { clearTimeout(joinAckTimer); joinAckTimer = null; }
+  isInJoinPhase = false;
+  if (wsClient && wsClient.readyState === WebSocket.OPEN) {
+    const topic = `${TOPIC_PREFIX}-${app.roomCode}`;
+    if (app.isHost && app.roomCode) { fetch(`${NTFY_URL}/${topic}`, { method: 'POST', body: JSON.stringify({ type: 'state', state: { closed: true } }) }).catch(() => {}); }
+    else if (app.roomCode && app.myPeerId) { publishAction({ type: 'leave' }); }
   }
+  try { if (wsClient) wsClient.close(); } catch (e) {} wsClient = null;
+  Object.assign(app, { isHost: false, myPeerId: null, roomCode: null, players: [], currentIndex: 0, endTimestamp: null, isRunning: false, isFinished: false, gameStarted: false });
+  setConnState(''); setScreen('welcome');
 }
 
-// ============ Timer / UI tick ============
 function tick() {
   if (app.gameStarted && app.endTimestamp) {
     const hostNow = app.isHost ? Date.now() : (Date.now() + timeOffset);
     const remaining = app.endTimestamp - hostNow;
-
     el.gameTimeText.textContent = formatTime(remaining);
-
-    const totalMs = app.duration * 1000;
-    const progress = Math.max(0, Math.min(1, remaining / totalMs));
+    const progress = Math.max(0, Math.min(1, remaining / (app.duration * 1000)));
     el.progressRingFill.style.strokeDashoffset = CIRCUMFERENCE * (1 - progress);
 
     if (remaining <= 0) {
       el.gameTimeText.classList.add('finished');
-      if (!alarmTriggered) {
-        alarmTriggered = true;
-        playBeep(); vibrate();
-        if (app.isHost && app.isRunning) {
-          app.isRunning = false;
-          app.isFinished = true;
-          broadcastState();
-        }
-      }
-    } else {
-      el.gameTimeText.classList.remove('finished');
-    }
+      if (!alarmTriggered) { alarmTriggered = true; playBeep(); vibrate(); if (app.isHost && app.isRunning) { app.isRunning = false; app.isFinished = true; publishState(); } }
+    } else { el.gameTimeText.classList.remove('finished'); }
   }
   requestAnimationFrame(tick);
 }
 
 function refreshUI() {
-  if (document.getElementById('screen-lobby').classList.contains('active')) {
-    renderLobby();
-  } else if (document.getElementById('screen-game').classList.contains('active')) {
-    renderGame();
-  }
+  if (document.getElementById('screen-lobby').classList.contains('active')) renderLobby();
+  else if (document.getElementById('screen-game').classList.contains('active')) renderGame();
 }
 
 function renderLobby() {
-  el.lobbyRoomCode.textContent = app.roomCode || '----';
-
-  el.playerList.innerHTML = '';
+  el.lobbyRoomCode.textContent = app.roomCode || '----'; el.playerList.innerHTML = '';
   app.players.forEach((p, idx) => {
-    const row = document.createElement('div');
-    row.className = 'player-row' + (p.peerId === app.myPeerId ? ' me' : '');
-
-    const num = document.createElement('div');
-    num.className = 'num';
-    num.textContent = idx + 1;
-    row.appendChild(num);
-
-    const name = document.createElement('div');
-    name.className = 'name';
-    name.textContent = p.name;
-    if (p.peerId === app.myPeerId) {
-      const tag = document.createElement('span');
-      tag.className = 'me-tag';
-      tag.textContent = '(du)';
-      name.appendChild(tag);
-    }
+    const row = document.createElement('div'); row.className = 'player-row' + (p.peerId === app.myPeerId ? ' me' : '');
+    const num = document.createElement('div'); num.className = 'num'; num.textContent = idx + 1; row.appendChild(num);
+    const name = document.createElement('div'); name.className = 'name'; name.style.flex = '1'; name.style.fontSize = '16px'; name.textContent = p.name;
+    if (p.peerId === app.myPeerId) { const tag = document.createElement('span'); tag.className = 'me-tag'; tag.style.color = '#a78bfa'; tag.style.fontSize = '10px'; tag.style.marginLeft = '6px'; tag.textContent = '(du)'; name.appendChild(tag); }
     row.appendChild(name);
 
     if (app.isHost) {
-      const ctrls = document.createElement('div');
-      ctrls.className = 'reorder-btns';
-      const up = document.createElement('button');
-      up.innerHTML = '&uarr;';
-      up.disabled = idx === 0;
-      up.onclick = () => hostMovePlayer(p.peerId, -1);
-      const down = document.createElement('button');
-      down.innerHTML = '&darr;';
-      down.disabled = idx === app.players.length - 1;
-      down.onclick = () => hostMovePlayer(p.peerId, 1);
+      const ctrls = document.createElement('div'); ctrls.className = 'reorder-btns';
+      const up = document.createElement('button'); up.type = 'button'; up.innerHTML = '&uarr;'; up.disabled = idx === 0; up.onclick = () => hostMovePlayer(p.peerId, -1);
+      const down = document.createElement('button'); down.type = 'button'; down.innerHTML = '&darr;'; down.disabled = idx === app.players.length - 1; down.onclick = () => hostMovePlayer(p.peerId, 1);
       ctrls.appendChild(up); ctrls.appendChild(down);
+      if (p.peerId !== app.myPeerId) { const kick = document.createElement('button'); kick.type = 'button'; kick.className = 'kick'; kick.innerHTML = '&times;'; kick.onclick = () => hostKickPlayer(p.peerId); ctrls.appendChild(kick); }
       row.appendChild(ctrls);
     }
     el.playerList.appendChild(row);
   });
-
-  el.hostControls.style.display = app.isHost ? 'block' : 'none';
-  el.joinerWait.style.display = app.isHost ? 'none' : 'block';
-
-  if (app.isHost) {
-    el.lobbyDurationSlider.value = app.duration;
-    el.lobbySliderValue.textContent = formatDurationLabel(app.duration);
-    el.btnStartGame.disabled = app.players.length < 1;
-  } else {
-    el.joinerWaitText.textContent =
-      `Warte auf Spielstart… (${formatDurationLabel(app.duration)} pro Zug)`;
-  }
+  el.hostControls.style.display = app.isHost ? 'block' : 'none'; el.joinerWait.style.display = app.isHost ? 'none' : 'block';
+  if (app.isHost) { el.lobbyDurationSlider.value = app.duration; el.lobbySliderValue.textContent = formatDurationLabel(app.duration); el.btnStartGame.disabled = app.players.length < 1; }
+  else { el.joinerWaitText.textContent = `Warte auf Spielstart… (${formatDurationLabel(app.duration)} pro Zug)`; }
 }
 
 function renderGame() {
-  const cur = app.players[app.currentIndex];
-  el.currentPlayerName.textContent = cur ? cur.name : '-';
-
-  el.gamePlayerPills.innerHTML = '';
+  const cur = app.players[app.currentIndex]; el.currentPlayerName.textContent = cur ? cur.name : '-'; el.gamePlayerPills.innerHTML = '';
   app.players.forEach((p, idx) => {
-    const pill = document.createElement('div');
-    pill.className = 'player-pill' + (idx === app.currentIndex ? ' current' : '');
-    pill.textContent = p.name;
-    el.gamePlayerPills.appendChild(pill);
+    const pill = document.createElement('div'); pill.className = 'player-pill' + (idx === app.currentIndex ? ' current' : ''); pill.textContent = p.name; el.gamePlayerPills.appendChild(pill);
   });
-
-  const isMyTurn = cur && cur.peerId === app.myPeerId;
-  el.btnNext.style.display = isMyTurn ? 'block' : 'none';
-  el.waitingBanner.style.display = isMyTurn ? 'none' : 'flex';
-  if (!isMyTurn && cur) {
-    el.waitingForName.textContent = cur.name;
+  const isMyTurn = cur && cur.peerId === app.myPeerId; el.btnNext.style.display = isMyTurn ? 'block' : 'none'; el.waitingBanner.style.display = isMyTurn ? 'none' : 'flex';
+  if (!isMyTurn && cur) { el.waitingForName.textContent = cur.name; }
+  
+  if (app.isHost) {
+    el.btnHostReset.style.display = isMyTurn ? 'none' : 'block';
+    el.btnLeaveGame.style.display = 'none';
+  } else {
+    el.btnHostReset.style.display = 'none';
+    el.btnLeaveGame.style.display = isMyTurn ? 'none' : 'block';
   }
-  el.btnHostReset.style.display = app.isHost ? 'block' : 'none';
 }
 
-// ============ Event handlers ============
 el.nameInput.value = getSavedName();
+function attachClick(elem, handler) {
+  let handled = false;
+  elem.addEventListener('touchend', (e) => { if (elem.disabled) return; e.preventDefault(); if (handled) return; handled = true; setTimeout(() => { handled = false; }, 500); handler(e); }, { passive: false });
+  elem.addEventListener('click', (e) => { if (elem.disabled) return; if (handled) return; handled = true; setTimeout(() => { handled = false; }, 500); handler(e); });
+}
 
-el.btnCreate.addEventListener('click', () => {
-  const name = el.nameInput.value.trim();
-  if (!name) { showStatus('Bitte gib einen Namen ein.'); el.nameInput.focus(); return; }
-  app.myName = name;
-  saveName(name);
-  ensureAudio();
-  createRoom();
-});
+attachClick(el.btnCreate, () => { const name = el.nameInput.value.trim(); if (!name) { showStatus('Bitte gib einen Namen ein.'); el.nameInput.focus(); return; } app.myName = name; saveName(name); ensureAudio(); createRoom(); });
+attachClick(el.btnJoin, () => { const name = el.nameInput.value.trim(); const code = el.codeInput.value.trim().toUpperCase(); if (!name) { showStatus('Bitte gib einen Namen ein.'); el.nameInput.focus(); return; } if (code.length !== 4) { showStatus('Bitte 4-stelligen Code eingeben.'); el.codeInput.focus(); return; } app.myName = name; saveName(name); ensureAudio(); joinRoom(code); });
 
-el.btnJoin.addEventListener('click', () => {
-  const name = el.nameInput.value.trim();
-  const code = el.codeInput.value.trim().toUpperCase();
-  if (!name) { showStatus('Bitte gib einen Namen ein.'); el.nameInput.focus(); return; }
-  if (code.length !== 4) { showStatus('Bitte 4-stelligen Code eingeben.'); el.codeInput.focus(); return; }
-  app.myName = name;
-  saveName(name);
-  ensureAudio();
-  joinRoom(code);
-});
+el.codeInput.addEventListener('input', (e) => { e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4); });
+el.lobbyDurationSlider.addEventListener('input', (e) => { const s = parseInt(e.target.value); app.duration = s; el.lobbySliderValue.textContent = formatDurationLabel(s); clearTimeout(durationBroadcastTimer); durationBroadcastTimer = setTimeout(() => publishState(), 200); });
+attachClick(el.btnStartGame, () => { ensureAudio(); hostStartGame(); });
+attachClick(el.btnLeaveLobby, () => { leaveRoom(); });
+attachClick(el.btnNext, () => { if (!app.gameStarted) return; const cur = app.players[app.currentIndex]; if (!cur || cur.peerId !== app.myPeerId) return; vibrate([50]); if (app.isHost) { advanceTurn(); } else { publishAction({ type: 'next' }); } });
+attachClick(el.btnHostReset, () => { if (app.isHost) hostResetGame(); });
+attachClick(el.btnLeaveGame, () => { leaveRoom(); });
 
-el.codeInput.addEventListener('input', (e) => {
-  e.target.value = e.target.value.toUpperCase();
-});
-
-el.lobbyDurationSlider.addEventListener('input', (e) => {
-  const s = parseInt(e.target.value);
-  app.duration = s;
-  el.lobbySliderValue.textContent = formatDurationLabel(s);
-  clearTimeout(durationBroadcastTimer);
-  durationBroadcastTimer = setTimeout(() => broadcastState(), 150);
-});
-
-el.btnStartGame.addEventListener('click', () => {
-  ensureAudio();
-  hostStartGame();
-});
-
-el.btnLeaveLobby.addEventListener('click', () => {
-  try { if (peer) peer.destroy(); } catch (e) {}
-  peerConns.clear();
-  hostConn = null; peer = null;
-  Object.assign(app, {
-    isHost: false, myPeerId: null, roomCode: null,
-    players: [], currentIndex: 0,
-    endTimestamp: null, isRunning: false, isFinished: false, gameStarted: false,
-  });
-  setScreen('welcome');
-});
-
-el.btnNext.addEventListener('click', () => {
-  if (!app.gameStarted) return;
-  const cur = app.players[app.currentIndex];
-  if (!cur || cur.peerId !== app.myPeerId) return;
-  vibrate([50]);
-  if (app.isHost) {
-    advanceTurn();
-  } else if (hostConn && hostConn.open) {
-    hostConn.send({ type: 'next' });
+window.addEventListener('beforeunload', () => {
+  if (app.roomCode && wsClient && wsClient.readyState === WebSocket.OPEN) {
+    const topic = `${TOPIC_PREFIX}-${app.roomCode}`;
+    if (app.isHost) { fetch(`${NTFY_URL}/${topic}`, { method: 'POST', body: JSON.stringify({ type: 'state', state: { closed: true } }), keepalive: true }).catch(() => {}); }
+    else { fetch(`${NTFY_URL}/${topic}`, { method: 'POST', body: JSON.stringify({ type: 'leave', from: app.myPeerId, ts: Date.now() }), keepalive: true }).catch(() => {}); }
   }
 });
 
-el.btnHostReset.addEventListener('click', () => {
-  if (app.isHost) hostResetGame();
-});
-
-document.addEventListener('visibilitychange', () => {
-  // Beim Wiederaufwachen: UI sofort aktualisieren
-});
-
-// Start timer loop
 requestAnimationFrame(tick);
-
 </script>
 </body>
 </html>
+
