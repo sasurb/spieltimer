@@ -7,7 +7,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0f0f1e">
-<title>Spieltimer</title>
+<title>Spieltimer P2P</title>
+<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 <style>
   * {
     margin: 0; padding: 0; box-sizing: border-box;
@@ -48,186 +49,54 @@
   }
 
   input[type="text"] {
-    width: 100%;
-    padding: 16px 18px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 14px;
-    color: #fff;
-    font-family: inherit;
-    font-size: 17px;
-    outline: none;
-    text-align: center;
-    letter-spacing: 1px;
-    -webkit-user-select: text; user-select: text;
+    width: 100%; padding: 16px 18px;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 14px; color: #fff; font-family: inherit;
+    font-size: 17px; outline: none; text-align: center;
+    letter-spacing: 1px; -webkit-user-select: text; user-select: text;
     -webkit-appearance: none; appearance: none;
   }
-  input[type="text"]:focus {
-    border-color: rgba(167,139,250,0.6);
-    background: rgba(255,255,255,0.09);
-  }
-  input[type="text"]#codeInput {
-    text-transform: uppercase;
-    font-weight: 600;
-    letter-spacing: 6px;
-    font-size: 22px;
-  }
+  input[type="text"]:focus { border-color: rgba(167,139,250,0.6); background: rgba(255,255,255,0.09); }
+  input[type="text"]#codeInput { text-transform: uppercase; font-weight: 600; letter-spacing: 6px; font-size: 22px; }
 
   .btn-primary, .btn-secondary, .btn-next, .btn-ghost {
-    width: 100%;
-    border: none;
-    border-radius: 16px;
-    font-family: inherit;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    cursor: pointer;
+    width: 100%; border: none; border-radius: 16px;
+    font-family: inherit; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; cursor: pointer;
     transition: transform 0.1s, box-shadow 0.2s, opacity 0.2s;
-    color: #fff;
-    -webkit-appearance: none; appearance: none;
+    color: #fff; -webkit-appearance: none; appearance: none;
     touch-action: manipulation;
   }
-  .btn-primary {
-    padding: 18px;
-    font-size: 15px;
-    background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%);
-    box-shadow: 0 6px 24px rgba(167, 139, 250, 0.45);
-  }
-  .btn-secondary {
-    padding: 18px;
-    font-size: 15px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.15);
-  }
-  .btn-ghost {
-    padding: 12px;
-    font-size: 12px;
-    background: transparent;
-    border: 1px solid rgba(255,255,255,0.12);
-    color: rgba(255,255,255,0.7);
-  }
-  .btn-primary:active, .btn-secondary:active, .btn-next:active, .btn-ghost:active {
-    transform: scale(0.97);
-  }
-  .btn-primary:disabled, .btn-next:disabled {
-    opacity: 0.4; box-shadow: none; cursor: not-allowed;
-  }
+  .btn-primary { padding: 18px; font-size: 15px; background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%); box-shadow: 0 6px 24px rgba(167, 139, 250, 0.45); }
+  .btn-secondary { padding: 18px; font-size: 15px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); }
+  .btn-ghost { padding: 12px; font-size: 12px; background: transparent; border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.7); }
+  .btn-primary:active, .btn-secondary:active, .btn-next:active, .btn-ghost:active { transform: scale(0.97); }
+  .btn-primary:disabled, .btn-next:disabled { opacity: 0.4; box-shadow: none; cursor: not-allowed; }
 
-  .divider {
-    text-align: center;
-    font-size: 11px;
-    color: rgba(255,255,255,0.3);
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    margin: 4px 0;
-  }
+  .divider { text-align: center; font-size: 11px; color: rgba(255,255,255,0.3); letter-spacing: 3px; text-transform: uppercase; margin: 4px 0; }
+  #screen-welcome { justify-content: center; gap: 16px; max-width: 420px; margin: 0 auto; width: 100%; }
+  .room-code-display { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 18px; padding: 16px; text-align: center; }
+  .room-code-value { font-size: 38px; font-weight: 800; letter-spacing: 12px; background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; padding-left: 12px; }
 
-  #screen-welcome {
-    justify-content: center;
-    gap: 16px;
-    max-width: 420px;
-    margin: 0 auto;
-    width: 100%;
-  }
-
-  .room-code-display {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 18px;
-    padding: 16px;
-    text-align: center;
-  }
-  .room-code-value {
-    font-size: 38px;
-    font-weight: 800;
-    letter-spacing: 12px;
-    background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
-    padding-left: 12px;
-  }
-
-  .player-list {
-    flex: 1 1 auto;
-    overflow-y: auto;
-    min-height: 60px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding-right: 2px;
-  }
-  .player-row {
-    display: flex;
-    align-items: center;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 14px;
-    padding: 12px 14px;
-    gap: 10px;
-  }
-  .player-row.me {
-    border-color: rgba(167,139,250,0.4);
-    background: rgba(167,139,250,0.08);
-  }
-  .player-row .num {
-    width: 26px; height: 26px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.08);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 13px; font-weight: 700;
-    color: rgba(255,255,255,0.7);
-  }
+  .player-list { flex: 1 1 auto; overflow-y: auto; min-height: 60px; display: flex; flex-direction: column; gap: 8px; padding-right: 2px; }
+  .player-row { display: flex; align-items: center; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 12px 14px; gap: 10px; }
+  .player-row.me { border-color: rgba(167,139,250,0.4); background: rgba(167,139,250,0.08); }
+  .player-row .num { width: 26px; height: 26px; border-radius: 50%; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.7); }
 
   .reorder-btns { display: flex; gap: 4px; }
-  .reorder-btns button {
-    width: 36px; height: 36px;
-    border: 1px solid rgba(255,255,255,0.15);
-    background: rgba(255,255,255,0.05);
-    border-radius: 10px; color: #fff; font-size: 16px;
-    cursor: pointer; touch-action: manipulation;
-  }
+  .reorder-btns button { width: 36px; height: 36px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); border-radius: 10px; color: #fff; font-size: 16px; cursor: pointer; touch-action: manipulation; }
   .reorder-btns button:disabled { opacity: 0.25; }
   .reorder-btns button.kick { color: #f87171; font-size: 18px; }
 
-  .audio-toggle { display: flex; align-items: center; gap: 4px; font-size: 10px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; cursor: pointer; }
-  .audio-toggle input[type="checkbox"] { width: 18px; height: 18px; accent-color: #a78bfa; cursor: pointer; }
-
-  .slider-container {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 14px; padding: 12px 16px;
-  }
-  .slider-label {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 8px; font-size: 11px; color: rgba(255,255,255,0.6);
-    text-transform: uppercase; letter-spacing: 1.5px;
-  }
+  .slider-container { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 12px 16px; }
+  .slider-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 11px; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 1.5px; }
   .slider-value { color: #a78bfa; font-weight: 600; font-size: 14px; }
-  input[type="range"] {
-    -webkit-appearance: none; appearance: none;
-    width: 100%; height: 5px; background: rgba(255,255,255,0.1);
-    border-radius: 3px; outline: none;
-  }
-  input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none; appearance: none;
-    width: 24px; height: 24px;
-    background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%);
-    border-radius: 50%; cursor: pointer;
-    box-shadow: 0 2px 8px rgba(167,139,250,0.5);
-  }
+  input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 5px; background: rgba(255,255,255,0.1); border-radius: 3px; outline: none; }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 24px; height: 24px; background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%); border-radius: 50%; cursor: pointer; box-shadow: 0 2px 8px rgba(167,139,250,0.5); }
 
   .inline-add-row { display: flex; gap: 8px; align-items: stretch; }
-  .inline-add-row input[type="text"] {
-    flex: 1; padding: 12px 14px; font-size: 15px;
-    text-align: left; letter-spacing: normal; text-transform: none;
-  }
-  .inline-add-row button {
-    flex: 0 0 50px; width: 50px;
-    border: none; border-radius: 12px;
-    background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%);
-    color: #fff; font-size: 22px; font-weight: 700;
-    cursor: pointer; touch-action: manipulation;
-  }
+  .inline-add-row input[type="text"] { flex: 1; padding: 12px 14px; font-size: 15px; text-align: left; letter-spacing: normal; text-transform: none; }
+  .inline-add-row button { flex: 0 0 50px; width: 50px; border: none; border-radius: 12px; background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%); color: #fff; font-size: 22px; font-weight: 700; cursor: pointer; touch-action: manipulation; }
   .inline-add-row button:active { transform: scale(0.95); }
 
   .current-banner { text-align: center; padding: 8px 0 4px; }
@@ -245,32 +114,8 @@
   .player-pill { padding: 6px 12px; border-radius: 100px; font-size: 12px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); }
   .player-pill.current { background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%); color: #fff; border-color: transparent; font-weight: 600; }
 
-  .btn-next { 
-    flex: 0 0 auto;
-    padding: 32px; 
-    font-size: 26px; 
-    background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%); 
-    box-shadow: 0 8px 32px rgba(167, 139, 250, 0.45); 
-    min-height: 120px;
-    border-radius: 24px;
-    margin-top: 8px;
-  }
-  .waiting-banner { 
-    flex: 0 0 auto;
-    padding: 32px; 
-    text-align: center; 
-    background: rgba(255,255,255,0.04); 
-    border: 2px dashed rgba(255,255,255,0.12); 
-    border-radius: 24px; 
-    color: rgba(255,255,255,0.6); 
-    font-size: 16px; 
-    letter-spacing: 1px; 
-    min-height: 120px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center;
-    margin-top: 8px;
-  }
+  .btn-next { flex: 0 0 auto; padding: 32px; font-size: 26px; background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%); box-shadow: 0 8px 32px rgba(167, 139, 250, 0.45); min-height: 120px; border-radius: 24px; margin-top: 8px; }
+  .waiting-banner { flex: 0 0 auto; padding: 32px; text-align: center; background: rgba(255,255,255,0.04); border: 2px dashed rgba(255,255,255,0.12); border-radius: 24px; color: rgba(255,255,255,0.6); font-size: 16px; letter-spacing: 1px; min-height: 120px; display: flex; align-items: center; justify-content: center; margin-top: 8px; }
 
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
   .time-text.finished { animation: pulse 0.8s ease-in-out infinite; background: linear-gradient(135deg, #f87171 0%, #fbbf24 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
@@ -295,7 +140,7 @@
 
 <div id="screen-welcome" class="screen active">
   <div class="title">Spieltimer</div>
-  <div class="subtitle">Mehrspieler-Timer</div>
+  <div class="subtitle">Lokales P2P-Spiel</div>
   <div style="height: 12px"></div>
   <input type="text" id="nameInput" placeholder="Dein Name" maxlength="20" autocomplete="off">
   <button class="btn-primary" id="btnCreate" type="button">Raum erstellen</button>
@@ -372,12 +217,11 @@
 <script>
 'use strict';
 
-const NTFY_URL = 'https://ntfy.sh';
-const APP_VERSION = '2.2';
-const TOPIC_PREFIX = 'spieltimer-v3'; // Erhöht zur Vermeidung von Cache-Problemen im Browser
+const APP_VERSION = 'P2P-1.0';
+const TOPIC_PREFIX = 'spieltimer-p2p';
 const CIRCUMFERENCE = 2 * Math.PI * 92;
 const STATE_REPUBLISH_MS = 3000;
-const WATCHDOG_TIMEOUT_MS = 11000; // Wenn länger als dies keine Nachricht über den Socket kam, gilt er als "eingefroren"
+const WATCHDOG_TIMEOUT_MS = 11000;
 
 const app = {
   myName: '', myPeerId: null, isHost: false, roomCode: null,
@@ -385,14 +229,18 @@ const app = {
   isRunning: false, isFinished: false, gameStarted: false
 };
 
-let wsClient = null;
+// WebRTC / PeerJS Variablen
+let peer = null;
+let hostConnections = []; // Nur für Host: Array aller verbundenen Clients
+let clientConnToHost = null; // Nur für Client: Verbindung zum Host
+
 let timeOffset = 0;
 let audioCtx = null;
 let speechUnlocked = false;
 let alarmTriggered = false;
 let halftimeTriggered = false;
 let thirtySecTriggered = false;
-let lastCountdownSecond = null; // letzte Sekunde, für die in den letzten 10s schon gepiepst wurde
+let lastCountdownSecond = null;
 let durationBroadcastTimer = null;
 let hostRepublishTimer = null;
 let watchdogTimer = null;
@@ -502,33 +350,19 @@ function playTones(freqs, noteDur = 0.2, gap = 0.06) {
   });
 }
 
-// Akustische Hinweise während eines Zuges. Jedes Gerät erkennt die Schwellenwerte
-// lokal anhand der eigenen (synchronisierten) Restzeit und meldet sich selbst.
 function alertHalftime() { vibrate([120]); playTones([523, 659], 0.2, 0.06); speak('Halbzeit'); }
 function alertThirtySeconds() { vibrate([150]); playTones([784], 0.22); speak('Noch 30 Sekunden'); }
-// Countdown-Piep für die letzten 10 Sekunden: ein Ton pro Sekunde, der zum Ende hin ansteigt (wie 10-9-8...)
 function alertCountdownTick(secondsLeft) {
-  const freq = 420 + (10 - secondsLeft) * 44; // steigt von 420Hz (bei 10s) auf 816Hz (bei 1s)
-  vibrate([60]);
-  playTones([freq], 0.12);
+  const freq = 420 + (10 - secondsLeft) * 44; 
+  vibrate([60]); playTones([freq], 0.12);
   if (secondsLeft === 10) speak('Noch 10 Sekunden');
 }
 function alertFinished() { playTones([880, 880, 880], 0.3, 0.1); }
-
-function resetTurnAlerts() {
-  alarmTriggered = false; halftimeTriggered = false; thirtySecTriggered = false; lastCountdownSecond = null;
-}
-
+function resetTurnAlerts() { alarmTriggered = false; halftimeTriggered = false; thirtySecTriggered = false; lastCountdownSecond = null; }
 function vibrate(pattern = [200, 100, 200, 100, 200]) { if (navigator.vibrate) navigator.vibrate(pattern); }
 
-// Liefert, ob für DIESES Gerät (anhand der eigenen Spieler-Zeile) Ansagen/Countdown aktiviert sind.
-function isMyAudioEnabled() {
-  const me = app.players.find(p => p.peerId === app.myPeerId);
-  return !!(me && me.audioEnabled);
-}
-
 async function requestWakeLock() { 
-  if (!app.roomCode) return; // Wach bleiben für die gesamte Sitzung (Lobby + Spiel), nicht nur während eines laufenden Zuges
+  if (!app.roomCode) return; 
   try { 
     if ('wakeLock' in navigator && !wakeLock) { 
       wakeLock = await navigator.wakeLock.request('screen'); 
@@ -541,129 +375,143 @@ async function releaseWakeLock() { try { if (wakeLock) { await wakeLock.release(
 document.addEventListener('click', () => { ensureAudio(); requestWakeLock(); });
 document.addEventListener('touchend', () => { ensureAudio(); requestWakeLock(); });
 
+// ==========================================
+// WebRTC / PeerJS Netzwerk-Logik
+// ==========================================
+
 function checkAndReconnectIfNeeded() {
   if (!app.roomCode || isExplicitLeave) return;
   requestWakeLock();
-  if (!wsClient || wsClient.readyState !== WebSocket.OPEN) {
-    showStatus('Verbindung wiederherstellen...', 'info', 2000);
-    reconnectNtfy();
+  
+  if (app.isHost) {
+      if (peer && peer.disconnected && !peer.destroyed) {
+          setConnState('connecting');
+          peer.reconnect();
+      }
+  } else {
+      if (!clientConnToHost || !clientConnToHost.open) {
+          showStatus('Verbindung wiederherstellen...', 'info', 2000);
+          reconnectClientToHost();
+      }
   }
 }
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') checkAndReconnectIfNeeded(); });
 window.addEventListener('pageshow', () => { checkAndReconnectIfNeeded(); });
 window.addEventListener('online', () => { checkAndReconnectIfNeeded(); });
 
-function connectNtfy(code, isHostFlag, onReady) {
-  setConnState('connecting');
-  isExplicitLeave = false;
-  const topic = `${TOPIC_PREFIX}-${code}`;
-  try { if (wsClient) { wsClient.close(); } } catch (e) {}
-
-  const ws = new WebSocket(`wss://ntfy.sh/${topic}/ws`);
-  wsClient = ws;
-  let opened = false;
-  const failTimer = setTimeout(() => {
-    if (!opened && wsClient === ws) { showStatus('Verbindung fehlgeschlagen. Bitte Netz prüfen.'); setConnState(''); }
-  }, 10000);
-
-  ws.onopen = () => {
-    opened = true; clearTimeout(failTimer); setConnState('connected');
-    lastMessageAt = Date.now(); startWatchdog();
-    if (onReady) onReady();
-  };
-  ws.onclose = () => {
-    if (wsClient !== ws) return; // veraltete Verbindung - eine neuere ist bereits aktiv, nichts tun
-    setConnState(''); stopWatchdog();
-    if (!isExplicitLeave && app.roomCode) {
-      setTimeout(() => reconnectNtfy(), 2000);
-    }
-  };
-  ws.onerror = () => { if (wsClient !== ws) return; setConnState(''); };
-  ws.onmessage = (event) => {
-    lastMessageAt = Date.now();
-    let payload; try { payload = JSON.parse(event.data); } catch (e) { return; }
-    if (payload.event === 'message') {
-      let msg; try { msg = JSON.parse(payload.message); } catch (e) { return; }
-      if (!msg) return;
-      if (msg.type === 'state') {
-        if (app.isHost) return;
-        handleStateMessage(msg.state);
-      } else {
-        if (!app.isHost) return;
-        handleActionMessage(msg);
-      }
-    }
-  };
-}
-
-// Wachhund: erkennt eine "eingeschlafene" Verbindung (Socket meldet OPEN, aber es kommen
-// keine Nachrichten mehr an, z.B. nach Standby) und erzwingt einen Reconnect.
 function startWatchdog() {
   stopWatchdog();
   watchdogTimer = setInterval(() => {
-    if (!app.roomCode || isExplicitLeave || !wsClient) return;
-    if (wsClient.readyState === WebSocket.OPEN && (Date.now() - lastMessageAt) > WATCHDOG_TIMEOUT_MS) {
-      showStatus('Verbindung wirkt eingefroren – baue neu auf…', 'info', 2500);
-      setConnState('connecting');
-      reconnectNtfy();
+    if (!app.roomCode || isExplicitLeave || app.isHost) return;
+    if ((Date.now() - lastMessageAt) > WATCHDOG_TIMEOUT_MS) {
+      showStatus('Verbindung scheint eingefroren – Reconnect...', 'info', 2000);
+      checkAndReconnectIfNeeded();
     }
   }, 5000);
 }
 function stopWatchdog() { if (watchdogTimer) { clearInterval(watchdogTimer); watchdogTimer = null; } }
 
-function reconnectNtfy() {
-  if (!app.roomCode || isExplicitLeave) return;
-  connectNtfy(app.roomCode, app.isHost, () => {
-    if (app.isHost) { publishState(); } else { publishAction({ type: 'join', name: app.myName }); }
-  });
+function reconnectClientToHost() {
+    if (!app.roomCode || isExplicitLeave || app.isHost) return;
+    setConnState('connecting');
+    if (clientConnToHost) { clientConnToHost.close(); }
+    
+    // Stelle sicher, dass unser eigener Peer noch offen ist
+    if (!peer || peer.destroyed) {
+        initClientPeer(() => establishConnectionToHost(app.roomCode, true));
+    } else if (peer.disconnected) {
+        peer.reconnect();
+        setTimeout(() => establishConnectionToHost(app.roomCode, true), 1000);
+    } else {
+        establishConnectionToHost(app.roomCode, true);
+    }
 }
 
-function postToTopic(body, retries = 1) {
-  if (!app.roomCode) return;
-  const topic = `${TOPIC_PREFIX}-${app.roomCode}`;
-  fetch(`${NTFY_URL}/${topic}`, { method: 'POST', body: JSON.stringify(body) })
-    .catch(() => { if (retries > 0) setTimeout(() => postToTopic(body, retries - 1), 800); });
+function establishConnectionToHost(code, isReconnect = false) {
+    const targetId = `${TOPIC_PREFIX}-${code}`;
+    clientConnToHost = peer.connect(targetId, { reliable: true });
+    
+    clientConnToHost.on('open', () => {
+        setConnState('connected');
+        lastMessageAt = Date.now();
+        startWatchdog();
+        // Sende unseren Join-Befehl an den Host
+        publishAction({ type: 'join', name: app.myName });
+    });
+    
+    clientConnToHost.on('data', (data) => {
+        lastMessageAt = Date.now();
+        if (data.type === 'state') handleStateMessage(data.state);
+    });
+    
+    clientConnToHost.on('close', () => {
+        setConnState('');
+        stopWatchdog();
+        if (!isExplicitLeave && app.roomCode) {
+            setTimeout(() => checkAndReconnectIfNeeded(), 2000);
+        }
+    });
+}
+
+function initClientPeer(onReady) {
+    if (peer) peer.destroy();
+    peer = new Peer({ debug: 0 }); // Zufällige ID für den Client
+    
+    peer.on('open', (id) => {
+        app.myPeerId = id;
+        if (onReady) onReady();
+    });
+    
+    peer.on('disconnected', () => { setConnState(''); if (!isExplicitLeave) peer.reconnect(); });
+    peer.on('error', (err) => { 
+        setConnState(''); 
+        if(isInJoinPhase) showStatus('Fehler beim Verbinden mit Server.'); 
+    });
 }
 
 function publishState() {
-  if (!wsClient || wsClient.readyState !== WebSocket.OPEN || isExplicitLeave) return;
+  if (!app.isHost || isExplicitLeave) return;
   const snapshot = {
     players: app.players, duration: app.duration, currentIndex: app.currentIndex,
     endTimestamp: app.endTimestamp, isRunning: app.isRunning, isFinished: app.isFinished,
     gameStarted: app.gameStarted, hostTime: Date.now()
   };
-  postToTopic({ type: 'state', state: snapshot });
-}
-
-// Sendet den Status zweimal kurz hintereinander. Falls die erste Nachricht im WebSocket eines
-// Mitspielers verloren geht, kommt die zweite kurz danach an - statt erst beim nächsten 3s-Intervall.
-function publishStateBurst() {
-  publishState();
-  setTimeout(() => publishState(), 400);
+  // Sende State an alle verbundenen Clients
+  hostConnections.forEach(conn => {
+      if (conn.open) conn.send({ type: 'state', state: snapshot });
+  });
 }
 
 function startHostRepublish() { stopHostRepublish(); hostRepublishTimer = setInterval(() => publishState(), STATE_REPUBLISH_MS); }
 function stopHostRepublish() { if (hostRepublishTimer) { clearInterval(hostRepublishTimer); hostRepublishTimer = null; } }
 
 function publishAction(action) {
-  if (!wsClient || wsClient.readyState !== WebSocket.OPEN) return;
+  if (app.isHost) return;
   const payload = { ...action, from: app.myPeerId, ts: Date.now() };
-  postToTopic(payload);
+  if (clientConnToHost && clientConnToHost.open) {
+      clientConnToHost.send(payload);
+  }
 }
 
+// ==========================================
+// Game Logik
+// ==========================================
+
 function handleActionMessage(action) {
+  // Wird nur vom Host ausgeführt, wenn ein Client Daten sendet
+  if (!app.isHost) return;
+  
   if (action.type === 'join') {
     if (!action.from || !action.name) return;
     if (app.players.find(p => p.peerId === action.from)) { publishState(); return; }
     if (app.gameStarted) return;
-    app.players.push({ peerId: action.from, name: action.name, audioEnabled: false });
+    app.players.push({ peerId: action.from, name: action.name });
     publishState(); renderLobby();
   } else if (action.type === 'next') {
     if (!app.gameStarted) return;
     const cur = app.players[app.currentIndex];
     if (cur && cur.peerId === action.from) { advanceTurn(); }
   } else if (action.type === 'leave') {
-    // EIN SPIELER VERLÄSST DEN RAUM EXPLIZIT (z.B. Button gedrückt) -> JETZT ENTFERNEN
     removePlayer(action.from);
   }
 }
@@ -674,7 +522,7 @@ function removePlayer(peerId) {
   if (app.players.length === 0) { hostResetGame(); return; }
   if (app.currentIndex >= app.players.length) { app.currentIndex = 0; }
   if (app.gameStarted && wasCurrent) { app.endTimestamp = Date.now() + app.duration * 1000; app.isRunning = true; app.isFinished = false; resetTurnAlerts(); }
-  publishStateBurst(); refreshUI();
+  publishState(); refreshUI();
 }
 
 function handleStateMessage(snapshot) {
@@ -698,8 +546,6 @@ function handleStateMessage(snapshot) {
     return;
   }
   
-  // WICHTIG: Wenn wir kurz die Verbindung verloren haben (meInList fehlt temporär auf dem Server, weil wir im Standby waren),
-  // kicken wir den Spieler NICHT mehr sofort, sondern geben ihm durch den Reconnect 300 Sekunden Zeit, sich wieder anzumelden.
   if (!meInList) { return; } 
   
   if (app.gameStarted && !prevStarted) { ensureAudio(); requestWakeLock(); setScreen('game'); }
@@ -708,11 +554,55 @@ function handleStateMessage(snapshot) {
 }
 
 function createRoom() {
-  app.isHost = true; app.myPeerId = generateClientId(); app.roomCode = generateRoomCode();
-  app.players = [{ peerId: app.myPeerId, name: app.myName, audioEnabled: true }];
-  showStatus('Verbinde zum Server...', 'info', 0);
-  connectNtfy(app.roomCode, true, () => {
-    hideStatus(); publishState(); startHostRepublish(); setScreen('lobby'); renderLobby();
+  app.isHost = true; app.roomCode = generateRoomCode(); app.myName = el.nameInput.value.trim();
+  showStatus('Erstelle P2P-Raum...', 'info', 0);
+  
+  if (peer) peer.destroy();
+  const hostId = `${TOPIC_PREFIX}-${app.roomCode}`;
+  app.myPeerId = `host-${generateClientId()}`;
+  app.players = [{ peerId: app.myPeerId, name: app.myName }];
+  
+  peer = new Peer(hostId, { debug: 0 });
+  setConnState('connecting');
+  
+  peer.on('open', (id) => {
+      hideStatus(); setConnState('connected');
+      publishState(); startHostRepublish(); setScreen('lobby'); renderLobby();
+  });
+  
+  peer.on('connection', (conn) => {
+      hostConnections.push(conn);
+      conn.on('data', (data) => {
+          handleActionMessage(data); 
+      });
+      conn.on('close', () => {
+          hostConnections = hostConnections.filter(c => c !== conn);
+      });
+  });
+  
+  peer.on('error', (err) => {
+      if (err.type === 'unavailable-id') {
+          showStatus('Code wird gerade verwendet. Bitte nochmal versuchen.');
+          setConnState('');
+      } else {
+          setConnState(''); showStatus('Fehler: ' + err.type);
+      }
+  });
+  
+  peer.on('disconnected', () => { setConnState(''); if (!isExplicitLeave) peer.reconnect(); });
+}
+
+function joinRoom(code) {
+  app.isHost = false; app.roomCode = code; isInJoinPhase = true;
+  app.myName = el.nameInput.value.trim();
+  showStatus('Verbinde per WebRTC...', 'info', 0);
+  setConnState('connecting');
+  
+  initClientPeer(() => {
+      establishConnectionToHost(code, false);
+      joinAckTimer = setTimeout(() => { 
+          if (isInJoinPhase) { showStatus('Raum nicht gefunden oder offline.'); leaveRoom(); } 
+      }, 8000);
   });
 }
 
@@ -720,24 +610,13 @@ function hostStartGame() {
   if (app.players.length < 1) return; ensureAudio(); requestWakeLock();
   app.gameStarted = true; app.currentIndex = 0; app.endTimestamp = Date.now() + app.duration * 1000;
   app.isRunning = true; app.isFinished = false; resetTurnAlerts();
-  publishStateBurst(); setScreen('game'); renderGame();
+  publishState(); setScreen('game'); renderGame();
 }
 
 function advanceTurn() {
   app.currentIndex = (app.currentIndex + 1) % app.players.length;
   app.endTimestamp = Date.now() + app.duration * 1000; app.isRunning = true; app.isFinished = false; resetTurnAlerts();
-  publishStateBurst(); refreshUI();
-}
-
-// Optimistische lokale Vorschau: Wenn ein Mitspieler selbst "Weiter" drückt, muss er nicht erst
-// auf die Bestätigung vom Host warten - sein Bildschirm wechselt sofort zum nächsten Spieler.
-// Sobald die echte Host-Bestätigung eintrifft, überschreibt sie diese Vorschau ohnehin.
-function applyOptimisticAdvance() {
-  if (app.players.length === 0) return;
-  app.currentIndex = (app.currentIndex + 1) % app.players.length;
-  app.endTimestamp = Date.now() + app.duration * 1000;
-  app.isRunning = true; app.isFinished = false; resetTurnAlerts();
-  refreshUI();
+  publishState(); refreshUI();
 }
 
 function hostResetGame() {
@@ -754,12 +633,6 @@ function hostMovePlayer(peerId, direction) {
 
 function hostKickPlayer(peerId) { if (peerId !== app.myPeerId) removePlayer(peerId); }
 
-function hostSetPlayerAudio(peerId, enabled) {
-  const p = app.players.find(p => p.peerId === peerId); if (!p) return;
-  p.audioEnabled = enabled;
-  publishState(); renderLobby();
-}
-
 function hostAddLocalPlayer() {
   const name = el.localPlayerInput.value.trim();
   if (!name) { showStatus('Bitte einen Namen eingeben.'); el.localPlayerInput.focus(); return; }
@@ -771,25 +644,23 @@ function hostAddLocalPlayer() {
   el.localPlayerInput.focus();
 }
 
-function joinRoom(code) {
-  app.isHost = false; app.myPeerId = generateClientId(); app.roomCode = code; isInJoinPhase = true;
-  showStatus('Verbinde...', 'info', 0);
-  connectNtfy(code, false, () => {
-    joinAckTimer = setTimeout(() => { if (isInJoinPhase) { showStatus('Raum nicht gefunden oder offline.'); leaveRoom(); } }, 10000);
-    setTimeout(() => { if (isInJoinPhase && wsClient && wsClient.readyState === WebSocket.OPEN) { publishAction({ type: 'join', name: app.myName }); } }, 400);
-  });
-}
-
 function leaveRoom() {
   isExplicitLeave = true;
   releaseWakeLock(); stopHostRepublish(); stopWatchdog(); if (joinAckTimer) { clearTimeout(joinAckTimer); joinAckTimer = null; }
   isInJoinPhase = false;
-  if (wsClient && wsClient.readyState === WebSocket.OPEN) {
-    const topic = `${TOPIC_PREFIX}-${app.roomCode}`;
-    if (app.isHost && app.roomCode) { fetch(`${NTFY_URL}/${topic}`, { method: 'POST', body: JSON.stringify({ type: 'state', state: { closed: true } }) }).catch(() => {}); }
-    else if (app.roomCode && app.myPeerId) { publishAction({ type: 'leave' }); }
+  
+  if (app.isHost) {
+      const snapshot = { closed: true };
+      hostConnections.forEach(c => { if(c.open) c.send({ type: 'state', state: snapshot }); c.close(); });
+  } else {
+      if (clientConnToHost && clientConnToHost.open) { 
+          clientConnToHost.send({ type: 'leave', from: app.myPeerId, ts: Date.now() }); 
+          clientConnToHost.close(); 
+      }
   }
-  try { if (wsClient) wsClient.close(); } catch (e) {} wsClient = null;
+  
+  if (peer) { peer.destroy(); peer = null; }
+  hostConnections = []; clientConnToHost = null;
   Object.assign(app, { isHost: false, myPeerId: null, roomCode: null, players: [], currentIndex: 0, endTimestamp: null, isRunning: false, isFinished: false, gameStarted: false });
   setConnState(''); setScreen('welcome');
 }
@@ -803,25 +674,22 @@ function tick() {
     const progress = Math.max(0, Math.min(1, remaining / totalMs));
     el.progressRingFill.style.strokeDashoffset = CIRCUMFERENCE * (1 - progress);
 
-    // Halbzeit-Ansage, nur wenn die Zugzeit über 2 Minuten liegt
     if (!halftimeTriggered && totalMs > 120000 && remaining > 0 && remaining <= totalMs / 2) {
-      halftimeTriggered = true; if (isMyAudioEnabled()) alertHalftime();
+      halftimeTriggered = true; alertHalftime();
     }
-    // 30-Sekunden-Hinweis (nur sinnvoll, wenn die Zugzeit länger als 30s ist)
     if (!thirtySecTriggered && totalMs > 30000 && remaining > 0 && remaining <= 30000) {
-      thirtySecTriggered = true; if (isMyAudioEnabled()) alertThirtySeconds();
+      thirtySecTriggered = true; alertThirtySeconds();
     }
-    // Countdown der letzten 10 Sekunden: jede volle Sekunde ein ansteigender Ton
     if (totalMs > 10000 && remaining > 0) {
       const secondsLeft = Math.ceil(remaining / 1000);
       if (secondsLeft <= 10 && secondsLeft !== lastCountdownSecond) {
-        lastCountdownSecond = secondsLeft; if (isMyAudioEnabled()) alertCountdownTick(secondsLeft);
+        lastCountdownSecond = secondsLeft; alertCountdownTick(secondsLeft);
       }
     }
 
     if (remaining <= 0) {
       el.gameTimeText.classList.add('finished');
-      if (!alarmTriggered) { alarmTriggered = true; if (isMyAudioEnabled()) { alertFinished(); vibrate(); } if (app.isHost && app.isRunning) { app.isRunning = false; app.isFinished = true; publishState(); } }
+      if (!alarmTriggered) { alarmTriggered = true; alertFinished(); vibrate(); if (app.isHost && app.isRunning) { app.isRunning = false; app.isFinished = true; publishState(); } }
     } else { el.gameTimeText.classList.remove('finished'); }
   }
   requestAnimationFrame(tick);
@@ -843,14 +711,6 @@ function renderLobby() {
     row.appendChild(name);
 
     if (app.isHost) {
-      if (!p.isLocal) {
-        const audioWrap = document.createElement('label'); audioWrap.className = 'audio-toggle';
-        const cb = document.createElement('input'); cb.type = 'checkbox'; cb.checked = !!p.audioEnabled;
-        cb.onchange = () => hostSetPlayerAudio(p.peerId, cb.checked);
-        const cbText = document.createElement('span'); cbText.textContent = 'Ton';
-        audioWrap.appendChild(cb); audioWrap.appendChild(cbText);
-        row.appendChild(audioWrap);
-      }
       const ctrls = document.createElement('div'); ctrls.className = 'reorder-btns';
       const up = document.createElement('button'); up.type = 'button'; up.innerHTML = '&uarr;'; up.disabled = idx === 0; up.onclick = () => hostMovePlayer(p.peerId, -1);
       const down = document.createElement('button'); down.type = 'button'; down.innerHTML = '&darr;'; down.disabled = idx === app.players.length - 1; down.onclick = () => hostMovePlayer(p.peerId, 1);
@@ -874,9 +734,6 @@ function renderGame() {
   if (!isMyTurn && cur) { el.waitingForName.textContent = cur.name; }
   
   if (app.isHost) {
-    const nextIdx = app.players.length > 0 ? (app.currentIndex + 1) % app.players.length : 0;
-    const nextPlayer = app.players[nextIdx];
-    el.btnHostNext.textContent = nextPlayer ? `Weiter zu ${nextPlayer.name}` : 'Nächster Spieler';
     el.btnHostNext.style.display = isMyTurn ? 'none' : 'block';
     el.btnHostReset.style.display = 'block';
     el.btnLeaveGame.style.display = 'none';
@@ -894,8 +751,8 @@ function attachClick(elem, handler) {
   elem.addEventListener('click', (e) => { if (elem.disabled) return; if (handled) return; handled = true; setTimeout(() => { handled = false; }, 500); handler(e); });
 }
 
-attachClick(el.btnCreate, () => { const name = el.nameInput.value.trim(); if (!name) { showStatus('Bitte gib einen Namen ein.'); el.nameInput.focus(); return; } app.myName = name; saveName(name); ensureAudio(); createRoom(); });
-attachClick(el.btnJoin, () => { const name = el.nameInput.value.trim(); const code = el.codeInput.value.trim().toUpperCase(); if (!name) { showStatus('Bitte gib einen Namen ein.'); el.nameInput.focus(); return; } if (code.length !== 4) { showStatus('Bitte 4-stelligen Code eingeben.'); el.codeInput.focus(); return; } app.myName = name; saveName(name); ensureAudio(); joinRoom(code); });
+attachClick(el.btnCreate, () => { const name = el.nameInput.value.trim(); if (!name) { showStatus('Bitte gib einen Namen ein.'); el.nameInput.focus(); return; } saveName(name); ensureAudio(); createRoom(); });
+attachClick(el.btnJoin, () => { const name = el.nameInput.value.trim(); const code = el.codeInput.value.trim().toUpperCase(); if (!name) { showStatus('Bitte gib einen Namen ein.'); el.nameInput.focus(); return; } if (code.length !== 4) { showStatus('Bitte 4-stelligen Code eingeben.'); el.codeInput.focus(); return; } saveName(name); ensureAudio(); joinRoom(code); });
 
 el.codeInput.addEventListener('input', (e) => { e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4); });
 el.lobbyDurationSlider.addEventListener('input', (e) => { const s = parseInt(e.target.value); app.duration = s; el.lobbySliderValue.textContent = formatDurationLabel(s); clearTimeout(durationBroadcastTimer); durationBroadcastTimer = setTimeout(() => publishState(), 200); });
@@ -903,16 +760,21 @@ attachClick(el.btnStartGame, () => { ensureAudio(); hostStartGame(); });
 attachClick(el.btnLeaveLobby, () => { leaveRoom(); });
 attachClick(el.btnAddLocalPlayer, () => { hostAddLocalPlayer(); });
 el.localPlayerInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); hostAddLocalPlayer(); } });
-attachClick(el.btnNext, () => { if (!app.gameStarted) return; const cur = app.players[app.currentIndex]; if (!cur || cur.peerId !== app.myPeerId) return; vibrate([50]); if (app.isHost) { advanceTurn(); } else { publishAction({ type: 'next' }); applyOptimisticAdvance(); } });
+attachClick(el.btnNext, () => { if (!app.gameStarted) return; const cur = app.players[app.currentIndex]; if (!cur || cur.peerId !== app.myPeerId) return; vibrate([50]); if (app.isHost) { advanceTurn(); } else { publishAction({ type: 'next' }); } });
 attachClick(el.btnHostNext, () => { if (app.isHost && app.gameStarted) { vibrate([50]); advanceTurn(); } });
 attachClick(el.btnHostReset, () => { if (app.isHost) hostResetGame(); });
 attachClick(el.btnLeaveGame, () => { leaveRoom(); });
 
 window.addEventListener('beforeunload', () => {
-  if (app.roomCode && wsClient && wsClient.readyState === WebSocket.OPEN) {
-    const topic = `${TOPIC_PREFIX}-${app.roomCode}`;
-    if (app.isHost) { fetch(`${NTFY_URL}/${topic}`, { method: 'POST', body: JSON.stringify({ type: 'state', state: { closed: true } }), keepalive: true }).catch(() => {}); }
-    else { fetch(`${NTFY_URL}/${topic}`, { method: 'POST', body: JSON.stringify({ type: 'leave', from: app.myPeerId, ts: Date.now() }), keepalive: true }).catch(() => {}); }
+  if (app.roomCode) {
+      if (app.isHost) {
+          const snapshot = { closed: true };
+          hostConnections.forEach(c => { if(c.open) c.send({ type: 'state', state: snapshot }); });
+      } else {
+          if (clientConnToHost && clientConnToHost.open) {
+              clientConnToHost.send({ type: 'leave', from: app.myPeerId, ts: Date.now() });
+          }
+      }
   }
 });
 
