@@ -9,6 +9,7 @@
 <meta name="theme-color" content="#0f0f1e">
 <title>Spieltimer P2P</title>
 <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
   * {
     margin: 0; padding: 0; box-sizing: border-box;
@@ -75,18 +76,24 @@
 
   .divider { text-align: center; font-size: 11px; color: rgba(255,255,255,0.3); letter-spacing: 3px; text-transform: uppercase; margin: 4px 0; }
   #screen-welcome { justify-content: center; gap: 16px; max-width: 420px; margin: 0 auto; width: 100%; }
+  
   .room-code-display { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 18px; padding: 16px; text-align: center; }
-  .room-code-value { font-size: 38px; font-weight: 800; letter-spacing: 12px; background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; padding-left: 12px; }
+  .room-code-value { font-size: 28px; font-weight: 800; letter-spacing: 8px; background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; padding-left: 8px; margin-bottom: 12px; }
+  
+  #qrcode { display: flex; justify-content: center; background: #fff; padding: 10px; border-radius: 12px; width: fit-content; margin: 0 auto; }
+  #qrcode img { width: 120px; height: 120px; }
 
   .player-list { flex: 1 1 auto; overflow-y: auto; min-height: 60px; display: flex; flex-direction: column; gap: 8px; padding-right: 2px; }
   .player-row { display: flex; align-items: center; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 12px 14px; gap: 10px; }
   .player-row.me { border-color: rgba(167,139,250,0.4); background: rgba(167,139,250,0.08); }
-  .player-row .num { width: 26px; height: 26px; border-radius: 50%; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.7); }
+  .player-row .num { width: 26px; height: 26px; border-radius: 50%; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.7); flex-shrink: 0; }
 
-  .reorder-btns { display: flex; gap: 4px; }
-  .reorder-btns button { width: 36px; height: 36px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); border-radius: 10px; color: #fff; font-size: 16px; cursor: pointer; touch-action: manipulation; }
+  .audio-toggle { background: transparent; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; margin-right: 4px; flex-shrink: 0; }
+  
+  .reorder-btns { display: flex; gap: 4px; flex-shrink: 0; }
+  .reorder-btns button { width: 32px; height: 32px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); border-radius: 8px; color: #fff; font-size: 14px; cursor: pointer; touch-action: manipulation; }
   .reorder-btns button:disabled { opacity: 0.25; }
-  .reorder-btns button.kick { color: #f87171; font-size: 18px; }
+  .reorder-btns button.kick { color: #f87171; font-size: 16px; }
 
   .slider-container { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 12px 16px; }
   .slider-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 11px; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 1.5px; }
@@ -152,10 +159,11 @@
 <div id="screen-lobby" class="screen">
   <div class="title">Spieltimer</div>
   <div class="room-code-display">
-    <div style="font-size:11px; opacity:0.5; text-transform:uppercase; letter-spacing:2px; margin-bottom:6px;">Raum-Code</div>
+    <div style="font-size:11px; opacity:0.5; text-transform:uppercase; letter-spacing:2px; margin-bottom:6px;">Mit Code oder Scan beitreten</div>
     <div class="room-code-value" id="lobbyRoomCode">----</div>
+    <div id="qrcode"></div>
   </div>
-  <div style="font-size:11px; opacity:0.5; text-transform:uppercase; letter-spacing:2px;">Spieler (Reihenfolge)</div>
+  <div style="font-size:11px; opacity:0.5; text-transform:uppercase; letter-spacing:2px; margin-top: 4px;">Spieler (Reihenfolge)</div>
   <div class="player-list" id="playerList"></div>
 
   <div id="hostControls" style="display:none">
@@ -206,10 +214,15 @@
   <div class="player-pills" id="gamePlayerPills"></div>
   <button class="btn-next" id="btnNext" type="button" style="display:none">Weiter</button>
   <div class="waiting-banner" id="waitingBanner" style="display:none">Warte auf <span id="waitingForName" style="margin-left:5px; font-weight:bold; color:#a78bfa"></span>…</div>
-  <button class="btn-secondary" id="btnHostNext" type="button" style="display:none; margin-top:8px;">Nächster Spieler (Host)</button>
+  
+  <button class="btn-secondary" id="btnHostNext" type="button" style="display:none; margin-top:8px;">Nächster: ?</button>
 
-  <div style="display: flex; gap: 8px; margin-top: 4px;">
-    <button class="btn-ghost" id="btnHostReset" type="button" style="display:none; flex: 1;">Zurück zur Lobby</button>
+  <div style="display: flex; gap: 8px; margin-top: 4px;" id="hostGameButtons">
+    <button class="btn-ghost" id="btnHostEndGame" type="button" style="display:none; flex: 1;">Spiel beenden</button>
+    <button class="btn-secondary" id="btnHostToLobby" type="button" style="display:none; flex: 2;">Zur Lobby</button>
+  </div>
+  
+  <div style="display: flex; gap: 8px; margin-top: 4px;" id="clientGameButtons">
     <button class="btn-ghost" id="btnLeaveGame" type="button" style="display:none; flex: 1;">Spiel verlassen</button>
   </div>
 </div>
@@ -217,7 +230,7 @@
 <script>
 'use strict';
 
-const APP_VERSION = 'P2P-1.0';
+const APP_VERSION = 'P2P-1.1';
 const TOPIC_PREFIX = 'spieltimer-p2p';
 const CIRCUMFERENCE = 2 * Math.PI * 92;
 const STATE_REPUBLISH_MS = 3000;
@@ -229,10 +242,9 @@ const app = {
   isRunning: false, isFinished: false, gameStarted: false
 };
 
-// WebRTC / PeerJS Variablen
 let peer = null;
-let hostConnections = []; // Nur für Host: Array aller verbundenen Clients
-let clientConnToHost = null; // Nur für Client: Verbindung zum Host
+let hostConnections = []; 
+let clientConnToHost = null; 
 
 let timeOffset = 0;
 let audioCtx = null;
@@ -274,14 +286,23 @@ const el = {
   waitingBanner: document.getElementById('waitingBanner'),
   waitingForName: document.getElementById('waitingForName'),
   btnHostNext: document.getElementById('btnHostNext'),
-  btnHostReset: document.getElementById('btnHostReset'),
+  btnHostEndGame: document.getElementById('btnHostEndGame'),
+  btnHostToLobby: document.getElementById('btnHostToLobby'),
   btnLeaveGame: document.getElementById('btnLeaveGame'),
   statusBar: document.getElementById('statusBar'),
   connectionDot: document.getElementById('connectionDot'),
+  qrcode: document.getElementById('qrcode'),
 };
 
 el.progressRingFill.style.strokeDasharray = CIRCUMFERENCE;
 document.getElementById('versionTag').textContent = 'v' + APP_VERSION;
+
+// URL Parameter verarbeiten (für automatischen Code durch QR-Scan)
+const urlParams = new URLSearchParams(window.location.search);
+const urlCode = urlParams.get('code');
+if (urlCode && urlCode.length === 4) {
+    el.codeInput.value = urlCode.toUpperCase();
+}
 
 function setScreen(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -361,6 +382,11 @@ function alertFinished() { playTones([880, 880, 880], 0.3, 0.1); }
 function resetTurnAlerts() { alarmTriggered = false; halftimeTriggered = false; thirtySecTriggered = false; lastCountdownSecond = null; }
 function vibrate(pattern = [200, 100, 200, 100, 200]) { if (navigator.vibrate) navigator.vibrate(pattern); }
 
+function audioAllowed() {
+    const me = app.players.find(p => p.peerId === app.myPeerId);
+    return me ? me.audioEnabled : false;
+}
+
 async function requestWakeLock() { 
   if (!app.roomCode) return; 
   try { 
@@ -416,7 +442,6 @@ function reconnectClientToHost() {
     setConnState('connecting');
     if (clientConnToHost) { clientConnToHost.close(); }
     
-    // Stelle sicher, dass unser eigener Peer noch offen ist
     if (!peer || peer.destroyed) {
         initClientPeer(() => establishConnectionToHost(app.roomCode, true));
     } else if (peer.disconnected) {
@@ -435,7 +460,6 @@ function establishConnectionToHost(code, isReconnect = false) {
         setConnState('connected');
         lastMessageAt = Date.now();
         startWatchdog();
-        // Sende unseren Join-Befehl an den Host
         publishAction({ type: 'join', name: app.myName });
     });
     
@@ -455,7 +479,7 @@ function establishConnectionToHost(code, isReconnect = false) {
 
 function initClientPeer(onReady) {
     if (peer) peer.destroy();
-    peer = new Peer({ debug: 0 }); // Zufällige ID für den Client
+    peer = new Peer({ debug: 0 });
     
     peer.on('open', (id) => {
         app.myPeerId = id;
@@ -476,7 +500,6 @@ function publishState() {
     endTimestamp: app.endTimestamp, isRunning: app.isRunning, isFinished: app.isFinished,
     gameStarted: app.gameStarted, hostTime: Date.now()
   };
-  // Sende State an alle verbundenen Clients
   hostConnections.forEach(conn => {
       if (conn.open) conn.send({ type: 'state', state: snapshot });
   });
@@ -498,14 +521,13 @@ function publishAction(action) {
 // ==========================================
 
 function handleActionMessage(action) {
-  // Wird nur vom Host ausgeführt, wenn ein Client Daten sendet
   if (!app.isHost) return;
-  
   if (action.type === 'join') {
     if (!action.from || !action.name) return;
     if (app.players.find(p => p.peerId === action.from)) { publishState(); return; }
     if (app.gameStarted) return;
-    app.players.push({ peerId: action.from, name: action.name });
+    // Clients standardmäßig stumm (audioEnabled = false)
+    app.players.push({ peerId: action.from, name: action.name, audioEnabled: false });
     publishState(); renderLobby();
   } else if (action.type === 'next') {
     if (!app.gameStarted) return;
@@ -549,8 +571,23 @@ function handleStateMessage(snapshot) {
   if (!meInList) { return; } 
   
   if (app.gameStarted && !prevStarted) { ensureAudio(); requestWakeLock(); setScreen('game'); }
+  // Wechseln auf Client-Seite nur zurück zur Lobby, wenn das Spiel vom Host gestoppt wurde
   else if (!app.gameStarted && prevStarted) { setScreen('lobby'); }
   refreshUI();
+}
+
+function generateQRCode() {
+    el.qrcode.innerHTML = '';
+    // Entferne alte Query-Parameter und hänge nur den Code an
+    const joinUrl = window.location.origin + window.location.pathname.split('?')[0] + '?code=' + app.roomCode;
+    new QRCode(el.qrcode, {
+        text: joinUrl,
+        width: 120,
+        height: 120,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.L
+    });
 }
 
 function createRoom() {
@@ -560,8 +597,11 @@ function createRoom() {
   if (peer) peer.destroy();
   const hostId = `${TOPIC_PREFIX}-${app.roomCode}`;
   app.myPeerId = `host-${generateClientId()}`;
-  app.players = [{ peerId: app.myPeerId, name: app.myName }];
+  // Host hat standardmäßig Audio an (audioEnabled = true)
+  app.players = [{ peerId: app.myPeerId, name: app.myName, audioEnabled: true }];
   
+  generateQRCode();
+
   peer = new Peer(hostId, { debug: 0 });
   setConnState('connecting');
   
@@ -638,6 +678,7 @@ function hostAddLocalPlayer() {
   if (!name) { showStatus('Bitte einen Namen eingeben.'); el.localPlayerInput.focus(); return; }
   if (app.gameStarted) return;
   const localId = 'local-' + generateClientId();
+  // Lokale Spieler haben kein Handy, daher kein eigenes audioEnabled Flag nötig
   app.players.push({ peerId: localId, name: name, isLocal: true });
   el.localPlayerInput.value = '';
   publishState(); renderLobby();
@@ -663,6 +704,10 @@ function leaveRoom() {
   hostConnections = []; clientConnToHost = null;
   Object.assign(app, { isHost: false, myPeerId: null, roomCode: null, players: [], currentIndex: 0, endTimestamp: null, isRunning: false, isFinished: false, gameStarted: false });
   setConnState(''); setScreen('welcome');
+  
+  // URL Parameter vom Code bereinigen
+  window.history.replaceState({}, document.title, window.location.pathname);
+  el.codeInput.value = '';
 }
 
 function tick() {
@@ -675,21 +720,25 @@ function tick() {
     el.progressRingFill.style.strokeDashoffset = CIRCUMFERENCE * (1 - progress);
 
     if (!halftimeTriggered && totalMs > 120000 && remaining > 0 && remaining <= totalMs / 2) {
-      halftimeTriggered = true; alertHalftime();
+      halftimeTriggered = true; if(audioAllowed()) alertHalftime();
     }
     if (!thirtySecTriggered && totalMs > 30000 && remaining > 0 && remaining <= 30000) {
-      thirtySecTriggered = true; alertThirtySeconds();
+      thirtySecTriggered = true; if(audioAllowed()) alertThirtySeconds();
     }
     if (totalMs > 10000 && remaining > 0) {
       const secondsLeft = Math.ceil(remaining / 1000);
       if (secondsLeft <= 10 && secondsLeft !== lastCountdownSecond) {
-        lastCountdownSecond = secondsLeft; alertCountdownTick(secondsLeft);
+        lastCountdownSecond = secondsLeft; if(audioAllowed()) alertCountdownTick(secondsLeft);
       }
     }
 
     if (remaining <= 0) {
       el.gameTimeText.classList.add('finished');
-      if (!alarmTriggered) { alarmTriggered = true; alertFinished(); vibrate(); if (app.isHost && app.isRunning) { app.isRunning = false; app.isFinished = true; publishState(); } }
+      if (!alarmTriggered) { 
+        alarmTriggered = true; 
+        if(audioAllowed()) { alertFinished(); vibrate(); }
+        if (app.isHost && app.isRunning) { app.isRunning = false; app.isFinished = true; publishState(); } 
+      }
     } else { el.gameTimeText.classList.remove('finished'); }
   }
   requestAnimationFrame(tick);
@@ -704,13 +753,29 @@ function renderLobby() {
   el.lobbyRoomCode.textContent = app.roomCode || '----'; el.playerList.innerHTML = '';
   app.players.forEach((p, idx) => {
     const row = document.createElement('div'); row.className = 'player-row' + (p.peerId === app.myPeerId ? ' me' : '');
+    
     const num = document.createElement('div'); num.className = 'num'; num.textContent = idx + 1; row.appendChild(num);
-    const name = document.createElement('div'); name.className = 'name'; name.style.flex = '1'; name.style.fontSize = '16px'; name.textContent = p.name;
+    const name = document.createElement('div'); name.className = 'name'; name.style.flex = '1'; name.style.fontSize = '16px'; name.style.overflow = 'hidden'; name.style.textOverflow = 'ellipsis'; name.style.whiteSpace = 'nowrap'; name.textContent = p.name;
+    
     if (p.peerId === app.myPeerId) { const tag = document.createElement('span'); tag.className = 'me-tag'; tag.style.color = '#a78bfa'; tag.style.fontSize = '10px'; tag.style.marginLeft = '6px'; tag.textContent = '(du)'; name.appendChild(tag); }
     if (p.isLocal) { const tag = document.createElement('span'); tag.style.color = 'rgba(255,255,255,0.4)'; tag.style.fontSize = '10px'; tag.style.marginLeft = '6px'; tag.textContent = '(kein Handy)'; name.appendChild(tag); }
     row.appendChild(name);
 
     if (app.isHost) {
+      // Audio Checkbox für verbundene (nicht lokale) Geräte
+      if (!p.isLocal) {
+        const audioBtn = document.createElement('button');
+        audioBtn.className = 'audio-toggle';
+        audioBtn.innerHTML = p.audioEnabled ? '🔊' : '🔇';
+        audioBtn.title = 'Ansage umschalten';
+        audioBtn.onclick = () => {
+          p.audioEnabled = !p.audioEnabled;
+          publishState();
+          renderLobby();
+        };
+        row.appendChild(audioBtn);
+      }
+
       const ctrls = document.createElement('div'); ctrls.className = 'reorder-btns';
       const up = document.createElement('button'); up.type = 'button'; up.innerHTML = '&uarr;'; up.disabled = idx === 0; up.onclick = () => hostMovePlayer(p.peerId, -1);
       const down = document.createElement('button'); down.type = 'button'; down.innerHTML = '&darr;'; down.disabled = idx === app.players.length - 1; down.onclick = () => hostMovePlayer(p.peerId, 1);
@@ -721,8 +786,19 @@ function renderLobby() {
     el.playerList.appendChild(row);
   });
   el.hostControls.style.display = app.isHost ? 'block' : 'none'; el.joinerWait.style.display = app.isHost ? 'none' : 'block';
-  if (app.isHost) { el.lobbyDurationSlider.value = app.duration; el.lobbySliderValue.textContent = formatDurationLabel(app.duration); el.btnStartGame.disabled = app.players.length < 1; }
-  else { el.joinerWaitText.textContent = `Warte auf Spielstart… (${formatDurationLabel(app.duration)} pro Zug)`; }
+  
+  if (app.isHost) { 
+      el.lobbyDurationSlider.value = app.duration; el.lobbySliderValue.textContent = formatDurationLabel(app.duration);
+      if (app.gameStarted) {
+          el.btnStartGame.textContent = 'Zurück zum Spiel';
+          el.btnStartGame.disabled = false;
+      } else {
+          el.btnStartGame.textContent = 'Spiel starten';
+          el.btnStartGame.disabled = app.players.length < 1; 
+      }
+  } else { 
+      el.joinerWaitText.textContent = `Warte auf Spielstart… (${formatDurationLabel(app.duration)} pro Zug)`; 
+  }
 }
 
 function renderGame() {
@@ -735,11 +811,18 @@ function renderGame() {
   
   if (app.isHost) {
     el.btnHostNext.style.display = isMyTurn ? 'none' : 'block';
-    el.btnHostReset.style.display = 'block';
-    el.btnLeaveGame.style.display = 'none';
+    if (app.players.length > 0) {
+        const nextIdx = (app.currentIndex + 1) % app.players.length;
+        el.btnHostNext.textContent = `Nächster: ${app.players[nextIdx].name}`;
+    }
+    document.getElementById('hostGameButtons').style.display = 'flex';
+    document.getElementById('btnHostEndGame').style.display = 'block';
+    document.getElementById('btnHostToLobby').style.display = 'block';
+    document.getElementById('clientGameButtons').style.display = 'none';
   } else {
     el.btnHostNext.style.display = 'none';
-    el.btnHostReset.style.display = 'none';
+    document.getElementById('hostGameButtons').style.display = 'none';
+    document.getElementById('clientGameButtons').style.display = 'flex';
     el.btnLeaveGame.style.display = isMyTurn ? 'none' : 'block';
   }
 }
@@ -756,13 +839,32 @@ attachClick(el.btnJoin, () => { const name = el.nameInput.value.trim(); const co
 
 el.codeInput.addEventListener('input', (e) => { e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4); });
 el.lobbyDurationSlider.addEventListener('input', (e) => { const s = parseInt(e.target.value); app.duration = s; el.lobbySliderValue.textContent = formatDurationLabel(s); clearTimeout(durationBroadcastTimer); durationBroadcastTimer = setTimeout(() => publishState(), 200); });
-attachClick(el.btnStartGame, () => { ensureAudio(); hostStartGame(); });
+
+attachClick(el.btnStartGame, () => { 
+    ensureAudio(); 
+    if (app.gameStarted) {
+        setScreen('game');
+        renderGame();
+    } else {
+        hostStartGame(); 
+    }
+});
+
 attachClick(el.btnLeaveLobby, () => { leaveRoom(); });
 attachClick(el.btnAddLocalPlayer, () => { hostAddLocalPlayer(); });
 el.localPlayerInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); hostAddLocalPlayer(); } });
 attachClick(el.btnNext, () => { if (!app.gameStarted) return; const cur = app.players[app.currentIndex]; if (!cur || cur.peerId !== app.myPeerId) return; vibrate([50]); if (app.isHost) { advanceTurn(); } else { publishAction({ type: 'next' }); } });
 attachClick(el.btnHostNext, () => { if (app.isHost && app.gameStarted) { vibrate([50]); advanceTurn(); } });
-attachClick(el.btnHostReset, () => { if (app.isHost) hostResetGame(); });
+
+// Neue Host Buttons im Spiel
+attachClick(el.btnHostEndGame, () => { if (app.isHost) hostResetGame(); });
+attachClick(el.btnHostToLobby, () => { 
+    if (app.isHost) { 
+        setScreen('lobby'); 
+        renderLobby(); 
+    } 
+});
+
 attachClick(el.btnLeaveGame, () => { leaveRoom(); });
 
 window.addEventListener('beforeunload', () => {
