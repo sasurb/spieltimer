@@ -644,3 +644,265 @@ function joinRoom(code) {
   
   // Verstecke die QR-Anzeigelemente komplett für normale Clients
   el.btnToggleQR.style.display = 'none';
+  el.qrcodeWrapper.style.display = 'none';
+  
+  showStatus('Verbinde per WebRTC...', 'info', 0);
+  setConnState('connecting');
+  
+  initClientPeer(() => {
+      establishConnectionToHost(code, false);
+      joinAckTimer = setTimeout(() => { 
+          if (isInJoinPhase) { showStatus('Raum nicht gefunden oder offline.'); leaveRoom(); } 
+      }, 8000);
+  });
+}
+
+function hostStartGame() {
+  if (app.players.length < 1) return; ensureAudio(); requestWakeLock();
+  app.gameStarted = true; app.currentIndex = 0; app.endTimestamp = Date.now() + app.duration * 1000;
+  app.isRunning = true; app.isFinished = false; resetTurnAlerts();
+  publishState(); setScreen('game'); renderGame();
+}
+
+function advanceTurn() {
+  app.currentIndex = (app.currentIndex + 1) % app.players.length;
+  app.endTimestamp = Date.now() + app.duration * 1000; app.isRunning = true; app.isFinished = false; resetTurnAlerts();
+  publishState(); refreshUI();
+}
+
+function hostResetGame() {
+  app.gameStarted = false; app.isRunning = false; app.isFinished = false; app.endTimestamp = null; app.currentIndex = 0; resetTurnAlerts();
+  publishState(); setScreen('lobby'); renderLobby();
+}
+
+function hostMovePlayer(peerId, direction) {
+  const idx = app.players.findIndex(p => p.peerId === peerId); if (idx < 0) return;
+  const newIdx = idx + direction; if (newIdx < 0 || newIdx >= app.players.length) return;
+  [app.players[idx], app.players[newIdx]] = [app.players[newIdx], app.players[idx]];
+  publishState(); renderLobby();
+}
+
+function hostKickPlayer(peerId) { if (peerId !== app.myPeerId) removePlayer(peerId); }
+
+function hostAddLocalPlayer() {
+  const name = el.localPlayerInput.value.trim();
+  if (!name) { showStatus('Bitte einen Namen eingeben.'); el.localPlayerInput.focus(); return; }
+  if (app.gameStarted) return;
+  const localId = 'local-' + generateClientId();
+  app.players.push({ peerId: localId, name: name, isLocal: true });
+  el.localPlayerInput.value = '';
+  publishState(); renderLobby();
+  el.localPlayerInput.focus();
+}
+
+function leaveRoom() {
+  isExplicitLeave = true;
+  releaseWakeLock(); stopHostRepublish(); stopWatchdog(); if (joinAckTimer) { clearTimeout(joinAckTimer); joinAckTimer = null; }
+  isInJoinPhase = false;
+  
+  if (app.isHost) {
+      const snapshot = { closed: true };
+      hostConnections.forEach(c => { if(c.open) c.send({ type: 'state', state: snapshot }); c.close(); });
+  } else {
+      if (clientConnToHost && clientConnToHost.open) { 
+          clientConnToHost.send({ type: 'leave', from: app.myPeerId, ts: Date.now() }); 
+          clientConnToHost.close(); 
+      }
+  }
+  
+  if (peer) { peer.destroy(); peer = null; }
+  hostConnections = []; clientConnToHost = null;
+  Object.assign(app, { isHost: false, myPeerId: null, roomCode: null, players: [], currentIndex: 0, endTimestamp: null, isRunning: false, isFinished: false, gameStarted: false });
+  setConnState(''); setScreen('welcome');
+  
+  window.history.replaceState({}, document.title, window.location.pathname);
+  el.codeInput.value = '';
+}
+
+function tick() {
+  if (app.gameStarted && app.endTimestamp) {
+    const hostNow = app.isHost ? Date.now() : (Date.now() + timeOffset);
+    const remaining = app.endTimestamp - hostNow;
+    el.gameTimeText.textContent = formatTime(remaining);
+    const totalMs = app.duration * 1000;
+    const progress = Math.max(0, Math.min(1, remaining / totalMs));
+    el.progressRingFill.style.strokeDashoffset = CIRCUMFERENCE * (1 - progress);
+
+    if (!halftimeTriggered && totalMs > 120000 && remaining > 0 && remaining <= totalMs / 2) {
+      halftimeTriggered = true; if(audioAllowed()) alertHalftime();
+    }
+    if (!thirtySecTriggered && totalMs > 30000 && remaining > 0 && remaining <= 30000) {
+      thirtySecTriggered = true; if(audioAllowed()) alertThirtySeconds();
+    }
+    if (totalMs > 10000 && remaining > 0) {
+      const secondsLeft = Math.ceil(remaining / 1000);
+      if (secondsLeft <= 10 && secondsLeft !== lastCountdownSecond) {
+        lastCountdownSecond = secondsLeft; if(audioAllowed()) alertCountdownTick(secondsLeft);
+      }
+    }
+
+    if (remaining <= 0) {
+      el.gameTimeText.classList.add('finished');
+      if (!alarmTriggered) { 
+        alarmTriggered = true; 
+        if(audioAllowed()) { alertFinished(); vibrate(); }
+        if (app.isHost && app.isRunning) { app.isRunning = false; app.isFinished = true; publishState(); } 
+      }
+    } else { el.gameTimeText.classList.remove('finished'); }
+  }
+  requestAnimationFrame(tick);
+}
+
+function refreshUI() {
+  if (document.getElementById('screen-lobby').classList.contains('active')) renderLobby();
+  else if (document.getElementById('screen-game').classList.contains('active')) renderGame();
+}
+
+function renderLobby() {
+  el.lobbyRoomCode.textContent = app.roomCode || '----'; el.playerList.innerHTML = '';
+  app.players.forEach((p, idx) => {
+    const row = document.createElement('div'); row.className = 'player-row' + (p.peerId === app.myPeerId ? ' me' : '');
+    
+    const num = document.createElement('div'); num.className = 'num'; num.textContent = idx + 1; row.appendChild(num);
+    const name = document.createElement('div'); name.className = 'name'; name.style.flex = '1'; name.style.fontSize = '16px'; name.style.overflow = 'hidden'; name.style.textOverflow = 'ellipsis'; name.style.whiteSpace = 'nowrap'; name.textContent = p.name;
+    
+    if (p.peerId === app.myPeerId) { const tag = document.createElement('span'); tag.className = 'me-tag'; tag.style.color = '#a78bfa'; tag.style.fontSize = '10px'; tag.style.marginLeft = '6px'; tag.textContent = '(du)'; name.appendChild(tag); }
+    if (p.isLocal) { const tag = document.createElement('span'); tag.style.color = 'rgba(255,255,255,0.4)'; tag.style.fontSize = '10px'; tag.style.marginLeft = '6px'; tag.textContent = '(kein Handy)'; name.appendChild(tag); }
+    row.appendChild(name);
+
+    if (app.isHost) {
+      if (!p.isLocal) {
+        const audioBtn = document.createElement('button');
+        audioBtn.className = 'audio-toggle';
+        audioBtn.innerHTML = p.audioEnabled ? '🔊' : '🔇';
+        audioBtn.title = 'Ansage umschalten';
+        audioBtn.onclick = () => {
+          p.audioEnabled = !p.audioEnabled;
+          publishState();
+          renderLobby();
+        };
+        row.appendChild(audioBtn);
+      }
+
+      const ctrls = document.createElement('div'); ctrls.className = 'reorder-btns';
+      const up = document.createElement('button'); up.type = 'button'; up.innerHTML = '&uarr;'; up.disabled = idx === 0; up.onclick = () => hostMovePlayer(p.peerId, -1);
+      const down = document.createElement('button'); down.type = 'button'; down.innerHTML = '&darr;'; down.disabled = idx === app.players.length - 1; down.onclick = () => hostMovePlayer(p.peerId, 1);
+      ctrls.appendChild(up); ctrls.appendChild(down);
+      if (p.peerId !== app.myPeerId) { const kick = document.createElement('button'); kick.type = 'button'; kick.className = 'kick'; kick.innerHTML = '&times;'; kick.onclick = () => hostKickPlayer(p.peerId); ctrls.appendChild(kick); }
+      row.appendChild(ctrls);
+    }
+    el.playerList.appendChild(row);
+  });
+  
+  el.hostControls.style.display = app.isHost ? 'block' : 'none'; el.joinerWait.style.display = app.isHost ? 'none' : 'block';
+  el.btnToggleQR.style.display = app.isHost ? 'block' : 'none';
+  
+  if (app.isHost) { 
+      el.lobbyDurationSlider.value = app.duration; el.lobbySliderValue.textContent = formatDurationLabel(app.duration);
+      if (app.gameStarted) {
+          el.btnStartGame.textContent = 'Zurück zum Spiel';
+          el.btnStartGame.disabled = false;
+      } else {
+          el.btnStartGame.textContent = 'Spiel starten';
+          el.btnStartGame.disabled = app.players.length < 1; 
+      }
+  } else { 
+      el.joinerWaitText.textContent = `Warte auf Spielstart… (${formatDurationLabel(app.duration)} pro Zug)`; 
+  }
+}
+
+function renderGame() {
+  const cur = app.players[app.currentIndex]; el.currentPlayerName.textContent = cur ? cur.name : '-'; el.gamePlayerPills.innerHTML = '';
+  app.players.forEach((p, idx) => {
+    const pill = document.createElement('div'); pill.className = 'player-pill' + (idx === app.currentIndex ? ' current' : ''); pill.textContent = p.name + (p.isLocal ? ' · kein Handy' : ''); el.gamePlayerPills.appendChild(pill);
+  });
+  const isMyTurn = cur && cur.peerId === app.myPeerId; el.btnNext.style.display = isMyTurn ? 'block' : 'none'; el.waitingBanner.style.display = isMyTurn ? 'none' : 'flex';
+  if (!isMyTurn && cur) { el.waitingForName.textContent = cur.name; }
+  
+  if (app.isHost) {
+    el.btnHostNext.style.display = isMyTurn ? 'none' : 'block';
+    if (app.players.length > 0) {
+        const nextIdx = (app.currentIndex + 1) % app.players.length;
+        el.btnHostNext.textContent = `Nächster: ${app.players[nextIdx].name}`;
+    }
+    document.getElementById('hostGameButtons').style.display = 'flex';
+    document.getElementById('btnHostEndGame').style.display = 'block';
+    document.getElementById('btnHostToLobby').style.display = 'block';
+    document.getElementById('clientGameButtons').style.display = 'none';
+  } else {
+    el.btnHostNext.style.display = 'none';
+    document.getElementById('hostGameButtons').style.display = 'none';
+    document.getElementById('clientGameButtons').style.display = 'flex';
+    el.btnLeaveGame.style.display = isMyTurn ? 'none' : 'block';
+  }
+}
+
+el.nameInput.value = getSavedName();
+function attachClick(elem, handler) {
+  let handled = false;
+  elem.addEventListener('touchend', (e) => { if (elem.disabled) return; e.preventDefault(); if (handled) return; handled = true; setTimeout(() => { handled = false; }, 500); handler(e); }, { passive: false });
+  elem.addEventListener('click', (e) => { if (elem.disabled) return; if (handled) return; handled = true; setTimeout(() => { handled = false; }, 500); handler(e); });
+}
+
+attachClick(el.btnCreate, () => { const name = el.nameInput.value.trim(); if (!name) { showStatus('Bitte gib einen Namen ein.'); el.nameInput.focus(); return; } saveName(name); ensureAudio(); createRoom(); });
+attachClick(el.btnJoin, () => { const name = el.nameInput.value.trim(); const code = el.codeInput.value.trim().toUpperCase(); if (!name) { showStatus('Bitte gib einen Namen ein.'); el.nameInput.focus(); return; } if (code.length !== 4) { showStatus('Bitte 4-stelligen Code eingeben.'); el.codeInput.focus(); return; } saveName(name); ensureAudio(); joinRoom(code); });
+
+el.codeInput.addEventListener('input', (e) => { e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4); });
+el.lobbyDurationSlider.addEventListener('input', (e) => { const s = parseInt(e.target.value); app.duration = s; el.lobbySliderValue.textContent = formatDurationLabel(s); clearTimeout(durationBroadcastTimer); durationBroadcastTimer = setTimeout(() => publishState(), 200); });
+
+// Toggle QR Code
+attachClick(el.btnToggleQR, () => {
+    const isHidden = el.qrcodeWrapper.style.display === 'none';
+    el.qrcodeWrapper.style.display = isHidden ? 'flex' : 'none';
+});
+
+// Toggle Add Local Player Box
+attachClick(el.btnToggleAddLocal, () => {
+    const isHidden = el.addLocalPlayerBox.style.display === 'none';
+    el.addLocalPlayerBox.style.display = isHidden ? 'block' : 'none';
+    if (isHidden) el.localPlayerInput.focus();
+});
+
+attachClick(el.btnStartGame, () => { 
+    ensureAudio(); 
+    if (app.gameStarted) {
+        setScreen('game');
+        renderGame();
+    } else {
+        hostStartGame(); 
+    }
+});
+
+attachClick(el.btnLeaveLobby, () => { leaveRoom(); });
+attachClick(el.btnAddLocalPlayer, () => { hostAddLocalPlayer(); });
+el.localPlayerInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); hostAddLocalPlayer(); } });
+attachClick(el.btnNext, () => { if (!app.gameStarted) return; const cur = app.players[app.currentIndex]; if (!cur || cur.peerId !== app.myPeerId) return; vibrate([50]); if (app.isHost) { advanceTurn(); } else { publishAction({ type: 'next' }); } });
+attachClick(el.btnHostNext, () => { if (app.isHost && app.gameStarted) { vibrate([50]); advanceTurn(); } });
+
+attachClick(el.btnHostEndGame, () => { if (app.isHost) hostResetGame(); });
+attachClick(el.btnHostToLobby, () => { 
+    if (app.isHost) { 
+        setScreen('lobby'); 
+        renderLobby(); 
+    } 
+});
+
+attachClick(el.btnLeaveGame, () => { leaveRoom(); });
+
+window.addEventListener('beforeunload', () => {
+  if (app.roomCode) {
+      if (app.isHost) {
+          const snapshot = { closed: true };
+          hostConnections.forEach(c => { if(c.open) c.send({ type: 'state', state: snapshot }); });
+      } else {
+          if (clientConnToHost && clientConnToHost.open) {
+              clientConnToHost.send({ type: 'leave', from: app.myPeerId, ts: Date.now() });
+          }
+      }
+  }
+});
+
+requestAnimationFrame(tick);
+</script>
+</body>
+</html>
