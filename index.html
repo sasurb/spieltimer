@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0f0f1e">
+<title>Spieltimer</title>
+<style>
+  * {
+    margin: 0; padding: 0; box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none; user-select: none;
+  }
+  html, body {
+    height: 100%; overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #0f0f1e; color: #fff;
+  }
+  body {
+    background: radial-gradient(ellipse at center, #1a1a3e 0%, #0f0f1e 50%, #050510 100%);
+    height: 100vh; height: 100dvh;
+    padding: env(safe-area-inset-top, 12px) 16px env(safe-area-inset-bottom, 12px);
+  }
+
+  .screen {
+    display: none;
+    flex-direction: column;
+    height: 100%;
+    gap: 14px;
+  }
+  .screen.active { display: flex; }
+
+  .title {
+    font-size: 22px; font-weight: 700; letter-spacing: 3px;
+    text-transform: uppercase; text-align: center;
+    background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-top: 8px;
+  }
+  .subtitle {
+    font-size: 11px; color: rgba(255,255,255,0.5);
+    text-transform: uppercase; letter-spacing: 2px;
+    text-align: center;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 16px 18px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 14px;
+    color: #fff;
+    font-family: inherit;
+    font-size: 17px;
+    outline: none;
+    text-align: center;
+    letter-spacing: 1px;
+    -webkit-user-select: text; user-select: text;
+    -webkit-appearance: none; appearance: none;
+  }
+  input[type="text"]:focus {
+    border-color: rgba(167,139,250,0.6);
+    background: rgba(255,255,255,0.09);
+  }
+  input[type="text"]#codeInput {
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 6px;
+    font-size: 22px;
+  }
+
+  .btn-primary, .btn-secondary, .btn-next, .btn-ghost {
+    width: 100%;
+    border: none;
+    border-radius: 16px;
+    font-family: inherit;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.2s, opacity 0.2s;
+    color: #fff;
+    -webkit-appearance: none; appearance: none;
+    touch-action: manipulation;
+  }
+  .btn-primary {
+    padding: 18px;
+    font-size: 15px;
+    background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%);
+    box-shadow: 0 6px 24px rgba(167, 139, 250, 0.45);
+  }
+  .btn-secondary {
+    padding: 18px;
+    font-size: 15px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .btn-ghost {
+    padding: 12px;
+    font-size: 12px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.7);
+  }
+  .btn-primary:active, .btn-secondary:active, .btn-next:active, .btn-ghost:active {
+    transform: scale(0.97);
+  }
+  .btn-primary:disabled, .btn-next:disabled {
+    opacity: 0.4; box-shadow: none; cursor: not-allowed;
+  }
+
+  .divider {
+    text-align: center;
+    font-size: 11px;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin: 4px 0;
+  }
+
+  #screen-welcome {
+    justify-content: center;
+    gap: 16px;
+    max-width: 420px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .room-code-display {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 18px;
+    padding: 16px;
+    text-align: center;
+  }
+  .room-code-value {
+    font-size: 38px;
+    font-weight: 800;
+    letter-spacing: 12px;
+    background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    padding-left: 12px;
+  }
+
+  .player-list {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    min-height: 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-right: 2px;
+  }
+  .player-row {
+    display: flex;
+    align-items: center;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 12px 14px;
+    gap: 10px;
+  }
+  .player-row.me {
+    border-color: rgba(167,139,250,0.4);
+    background: rgba(167,139,250,0.08);
+  }
+  .player-row .num {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700;
+    color: rgba(255,255,255,0.7);
+  }
+
+  .reorder-btns { display: flex; gap: 4px; }
+  .reorder-btns button {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px; color: #fff; font-size: 16px;
+    cursor: pointer; touch-action: manipulation;
+  }
+  .reorder-btns button:disabled { opacity: 0.25; }
+  .reorder-btns button.kick { color: #f87171; font-size: 18px; }
+
+  .slider-container {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px; padding: 12px 16px;
+  }
+  .slider-label {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 8px; font-size: 11px; color: rgba(255,255,255,0.6);
+    text-transform: uppercase; letter-spacing: 1.5px;
+  }
+  .slider-value { color: #a78bfa; font-weight: 600; font-size: 14px; }
+  input[type="range"] {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 5px; background: rgba(255,255,255,0.1);
+    border-radius: 3px; outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 24px; height: 24px;
+    background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%);
+    border-radius: 50%; cursor: pointer;
+    box-shadow: 0 2px 8px rgba(167,139,250,0.5);
+  }
+
+  .inline-add-row { display: flex; gap: 8px; align-items: stretch; }
+  .inline-add-row input[type="text"] {
+    flex: 1; padding: 12px 14px; font-size: 15px;
+    text-align: left; letter-spacing: normal; text-transform: none;
+  }
+  .inline-add-row button {
+    flex: 0 0 50px; width: 50px;
+    border: none; border-radius: 12px;
+    background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%);
+    color: #fff; font-size: 22px; font-weight: 700;
+    cursor: pointer; touch-action: manipulation;
+  }
+  .inline-add-row button:active { transform: scale(0.95); }
+
+  .current-banner { text-align: center; padding: 8px 0 4px; }
+  .current-banner .lbl { font-size: 10px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 4px; }
+  .current-banner .player-name-big { font-size: 30px; font-weight: 700; background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+  .timer-area { flex: 1 1 auto; display: flex; align-items: center; justify-content: center; min-height: 0; }
+  .timer-container { position: relative; width: min(65vw, 240px); aspect-ratio: 1; display: flex; align-items: center; justify-content: center; }
+  .progress-ring { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+  .progress-ring-bg { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 7; }
+  .progress-ring-fill { fill: none; stroke: url(#grad); stroke-width: 7; stroke-linecap: round; transition: stroke-dashoffset 0.3s linear; filter: drop-shadow(0 0 8px rgba(167,139,250,0.5)); }
+  .time-text { font-size: clamp(44px, 12vw, 64px); font-weight: 200; font-variant-numeric: tabular-nums; letter-spacing: -2px; text-shadow: 0 0 24px rgba(167,139,250,0.3); }
+
+  .player-pills { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; padding: 0 4px; margin-bottom: 4px; }
+  .player-pill { padding: 6px 12px; border-radius: 100px; font-size: 12px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); }
+  .player-pill.current { background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%); color: #fff; border-color: transparent; font-weight: 600; }
+
+  .btn-next { 
+    flex: 0 0 auto;
+    padding: 32px; 
+    font-size: 26px; 
+    background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%); 
+    box-shadow: 0 8px 32px rgba(167, 139, 250, 0.45); 
+    min-height: 120px;
+    border-radius: 24px;
+    margin-top: 8px;
+  }
+  .waiting-banner { 
+    flex: 0 0 auto;
+    padding: 32px; 
+    text-align: center; 
+    background: rgba(255,255,255,0.04); 
+    border: 2px dashed rgba(255,255,255,0.12); 
+    border-radius: 24px; 
+    color: rgba(255,255,255,0.6); 
+    font-size: 16px; 
+    letter-spacing: 1px; 
+    min-height: 120px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    margin-top: 8px;
+  }
+
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+  .time-text.finished { animation: pulse 0.8s ease-in-out infinite; background: linear-gradient(135deg, #f87171 0%, #fbbf24 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+  #statusBar { position: fixed; top: env(safe-area-inset-top, 8px); left: 50%; transform: translateX(-50%); background: rgba(220,38,38,0.95); color: #fff; padding: 8px 16px; border-radius: 100px; font-size: 13px; z-index: 100; display: none; max-width: 90vw; text-align: center; }
+  #statusBar.show { display: block; }
+  #statusBar.info { background: rgba(96,165,250,0.95); }
+  #statusBar.success { background: rgba(34,197,94,0.95); }
+
+  #connectionDot { position: fixed; top: env(safe-area-inset-top, 8px); right: 12px; width: 10px; height: 10px; border-radius: 50%; background: #ef4444; z-index: 99; transition: background 0.3s; box-shadow: 0 0 6px currentColor; }
+  #connectionDot.connected { background: #22c55e; }
+  #connectionDot.connecting { background: #fbbf24; }
+</style>
+</head>
+<body>
+
+<div id="statusBar"></div>
+<div id="connectionDot" title="Verbindungsstatus"></div>
+
+<div id="screen-welcome" class="screen active">
+  <div class="title">Spieltimer</div>
+  <div class="subtitle">Mehrspieler-Timer</div>
+  <div style="height: 12px"></div>
+  <input type="text" id="nameInput" placeholder="Dein Name" maxlength="20" autocomplete="off">
+  <button class="btn-primary" id="btnCreate" type="button">Raum erstellen</button>
+  <div class="divider">oder</div>
+  <input type="text" id="codeInput" placeholder="CODE" maxlength="4" autocomplete="off">
+  <button class="btn-secondary" id="btnJoin" type="button">Raum beitreten</button>
+</div>
+
+<div id="screen-lobby" class="screen">
+  <div class="title">Spieltimer</div>
+  <div class="room-code-display">
+    <div style="font-size:11px; opacity:0.5; text-transform:uppercase; letter-spacing:2px; margin-bottom:6px;">Raum-Code</div>
+    <div class="room-code-value" id="lobbyRoomCode">----</div>
+  </div>
+  <div style="font-size:11px; opacity:0.5; text-transform:uppercase; letter-spacing:2px;">Spieler (Reihenfolge)</div>
+  <div class="player-list" id="playerList"></div>
+
+  <div id="hostControls" style="display:none">
+    <div class="slider-container" id="addLocalPlayerBox">
+      <div class="slider-label"><span>Spieler ohne Handy hinzufügen</span></div>
+      <div class="inline-add-row">
+        <input type="text" id="localPlayerInput" placeholder="Name eingeben" maxlength="20" autocomplete="off">
+        <button type="button" id="btnAddLocalPlayer">+</button>
+      </div>
+    </div>
+    <div style="height: 8px"></div>
+    <div class="slider-container">
+      <div class="slider-label">
+        <span>Zeit pro Zug</span>
+        <span class="slider-value" id="lobbySliderValue">5:00 min</span>
+      </div>
+      <input type="range" id="lobbyDurationSlider" min="10" max="600" step="10" value="300">
+    </div>
+    <div style="height: 8px"></div>
+    <button class="btn-primary" id="btnStartGame" type="button">Spiel starten</button>
+  </div>
+
+  <div id="joinerWait" style="display:none">
+    <div style="text-align:center; padding:18px; color:rgba(255,255,255,0.6);" id="joinerWaitText">Warte auf Spielstart…</div>
+  </div>
+  <button class="btn-ghost" id="btnLeaveLobby" type="button" style="margin-top: auto">Raum verlassen</button>
+</div>
+
+<div id="screen-game" class="screen">
+  <div class="current-banner">
+    <div class="lbl">Am Zug</div>
+    <div class="player-name-big" id="currentPlayerName">-</div>
+  </div>
+  <div class="timer-area">
+    <div class="timer-container">
+      <svg class="progress-ring" viewBox="0 0 200 200">
+        <defs>
+          <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#a78bfa"/><stop offset="100%" style="stop-color:#60a5fa"/>
+          </linearGradient>
+        </defs>
+        <circle class="progress-ring-bg" cx="100" cy="100" r="92"/>
+        <circle class="progress-ring-fill" cx="100" cy="100" r="92" stroke-dasharray="578.05" stroke-dashoffset="0"/>
+      </svg>
+      <div class="time-text" id="gameTimeText">05:00</div>
+    </div>
+  </div>
+  <div class="player-pills" id="gamePlayerPills"></div>
+  <button class="btn-next" id="btnNext" type="button" style="display:none">Weiter</button>
+  <div class="waiting-banner" id="waitingBanner" style="display:none">Warte auf <span id="waitingForName" style="margin-left:5px; font-weight:bold; color:#a78bfa"></span>…</div>
+  <button class="btn-secondary" id="btnHostNext" type="button" style="display:none; margin-top:8px;">Nächster Spieler (Host)</button>
+
+  <div style="display: flex; gap: 8px; margin-top: 4px;">
+    <button class="btn-ghost" id="btnHostReset" type="button" style="display:none; flex: 1;">Zurück zur Lobby</button>
+    <button class="btn-ghost" id="btnLeaveGame" type="button" style="display:none; flex: 1;">Spiel verlassen</button>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+const NTFY_URL = 'https://ntfy.sh';
+const TOPIC_PREFIX = 'spieltimer-v3'; // Erhöht zur Vermeidung von Cache-Problemen im Browser
+const CIRCUMFERENCE = 2 * Math.PI * 92;
+const STATE_REPUBLISH_MS = 3000;
+const WATCHDOG_TIMEOUT_MS = 11000; // Wenn länger als dies keine Nachricht über den Socket kam, gilt er als "eingefroren"
+
+const app = {
+  myName: '', myPeerId: null, isHost: false, roomCode: null,
+  players: [], duration: 300, currentIndex: 0, endTimestamp: null,
+  isRunning: false, isFinished: false, gameStarted: false
+};
+
+let wsClient = null;
+let timeOffset = 0;
+let audioCtx = null;
+let speechUnlocked = false;
+let alarmTriggered = false;
+let halftimeTriggered = false;
+let thirtySecTriggered = false;
+let lastCountdownSecond = null; // letzte Sekunde, für die in den letzten 10s schon gepiepst wurde
+let durationBroadcastTimer = null;
+let hostRepublishTimer = null;
+let watchdogTimer = null;
+let lastMessageAt = Date.now();
+let wakeLock = null;
+let isInJoinPhase = false;
+let joinAckTimer = null;
+let isExplicitLeave = false;
+
+const el = {
+  nameInput: document.getElementById('nameInput'),
+  codeInput: document.getElementById('codeInput'),
+  btnCreate: document.getElementById('btnCreate'),
+  btnJoin: document.getElementById('btnJoin'),
+  lobbyRoomCode: document.getElementById('lobbyRoomCode'),
+  playerList: document.getElementById('playerList'),
+  hostControls: document.getElementById('hostControls'),
+  joinerWait: document.getElementById('joinerWait'),
+  joinerWaitText: document.getElementById('joinerWaitText'),
+  localPlayerInput: document.getElementById('localPlayerInput'),
+  btnAddLocalPlayer: document.getElementById('btnAddLocalPlayer'),
+  lobbyDurationSlider: document.getElementById('lobbyDurationSlider'),
+  lobbySliderValue: document.getElementById('lobbySliderValue'),
+  btnStartGame: document.getElementById('btnStartGame'),
+  btnLeaveLobby: document.getElementById('btnLeaveLobby'),
+  currentPlayerName: document.getElementById('currentPlayerName'),
+  gameTimeText: document.getElementById('gameTimeText'),
+  progressRingFill: document.querySelector('.progress-ring-fill'),
+  gamePlayerPills: document.getElementById('gamePlayerPills'),
+  btnNext: document.getElementById('btnNext'),
+  waitingBanner: document.getElementById('waitingBanner'),
+  waitingForName: document.getElementById('waitingForName'),
+  btnHostNext: document.getElementById('btnHostNext'),
+  btnHostReset: document.getElementById('btnHostReset'),
+  btnLeaveGame: document.getElementById('btnLeaveGame'),
+  statusBar: document.getElementById('statusBar'),
+  connectionDot: document.getElementById('connectionDot'),
+};
+
+el.progressRingFill.style.strokeDasharray = CIRCUMFERENCE;
+
+function setScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+}
+
+function showStatus(text, kind = 'error', durationMs = 4000) {
+  el.statusBar.textContent = text;
+  let cls = 'show';
+  if (kind === 'info') cls += ' info';
+  else if (kind === 'success') cls += ' success';
+  el.statusBar.className = cls;
+  if (durationMs > 0) { setTimeout(() => { if(el.statusBar.textContent === text) el.statusBar.className = ''; }, durationMs); }
+}
+function hideStatus() { el.statusBar.className = ''; }
+function setConnState(state) { el.connectionDot.className = state || ''; }
+
+function formatTime(ms) {
+  const s = Math.max(0, Math.ceil(ms / 1000));
+  return `${String(Math.floor(s / 60)).padStart(2,'0')}:${String(s % 60).padStart(2,'0')}`;
+}
+function formatDurationLabel(seconds) {
+  const m = Math.floor(seconds / 60); const s = seconds % 60;
+  return s === 0 ? `${m}:00 min` : `${m}:${String(s).padStart(2,'0')} min`;
+}
+function generateRoomCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let code = '';
+  for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  return code;
+}
+function generateClientId() { return Math.random().toString(36).slice(2, 14); }
+function getSavedName() { try { return localStorage.getItem('spieltimer.name') || ''; } catch (e) { return ''; } }
+function saveName(name) { try { localStorage.setItem('spieltimer.name', name); } catch (e) {} }
+
+function ensureSpeech() {
+  if (speechUnlocked || !('speechSynthesis' in window)) return;
+  try { const u = new SpeechSynthesisUtterance(''); speechSynthesis.speak(u); speechUnlocked = true; } catch (e) {}
+}
+function speak(text) {
+  try {
+    if (!('speechSynthesis' in window)) return false;
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'de-DE'; u.rate = 1.0; u.volume = 1.0;
+    speechSynthesis.speak(u);
+    return true;
+  } catch (e) { return false; }
+}
+
+function ensureAudio() {
+  if (!audioCtx) { try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} }
+  if (audioCtx && audioCtx.state === 'suspended') { audioCtx.resume().catch(() => {}); }
+  ensureSpeech();
+}
+
+function playTones(freqs, noteDur = 0.2, gap = 0.06) {
+  ensureAudio(); if (!audioCtx) return;
+  const now = audioCtx.currentTime;
+  freqs.forEach((f, i) => {
+    const t = now + i * (noteDur + gap);
+    const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.frequency.value = f; osc.type = 'sine';
+    gain.gain.setValueAtTime(0, t); gain.gain.linearRampToValueAtTime(0.3, t + 0.01); gain.gain.linearRampToValueAtTime(0, t + noteDur);
+    osc.start(t); osc.stop(t + noteDur);
+  });
+}
+
+// Akustische Hinweise während eines Zuges. Jedes Gerät erkennt die Schwellenwerte
+// lokal anhand der eigenen (synchronisierten) Restzeit und meldet sich selbst.
+function alertHalftime() { vibrate([120]); playTones([523, 659], 0.2, 0.06); speak('Halbzeit'); }
+function alertThirtySeconds() { vibrate([150]); playTones([784], 0.22); speak('Noch 30 Sekunden'); }
+// Countdown-Piep für die letzten 10 Sekunden: ein Ton pro Sekunde, der zum Ende hin ansteigt (wie 10-9-8...)
+function alertCountdownTick(secondsLeft) {
+  const freq = 420 + (10 - secondsLeft) * 44; // steigt von 420Hz (bei 10s) auf 816Hz (bei 1s)
+  vibrate([60]);
+  playTones([freq], 0.12);
+  if (secondsLeft === 10) speak('Noch 10 Sekunden');
+}
+function alertFinished() { playTones([880, 880, 880], 0.3, 0.1); }
+
+function resetTurnAlerts() {
+  alarmTriggered = false; halftimeTriggered = false; thirtySecTriggered = false; lastCountdownSecond = null;
+}
+
+function vibrate(pattern = [200, 100, 200, 100, 200]) { if (navigator.vibrate) navigator.vibrate(pattern); }
+
+async function requestWakeLock() { 
+  if (!app.roomCode) return; // Wach bleiben für die gesamte Sitzung (Lobby + Spiel), nicht nur während eines laufenden Zuges
+  try { 
+    if ('wakeLock' in navigator && !wakeLock) { 
+      wakeLock = await navigator.wakeLock.request('screen'); 
+      wakeLock.addEventListener('release', () => { wakeLock = null; });
+    } 
+  } catch (e) {} 
+}
+async function releaseWakeLock() { try { if (wakeLock) { await wakeLock.release(); wakeLock = null; } } catch (e) {} }
+
+document.addEventListener('click', () => { ensureAudio(); requestWakeLock(); });
+document.addEventListener('touchend', () => { ensureAudio(); requestWakeLock(); });
+
+function checkAndReconnectIfNeeded() {
+  if (!app.roomCode || isExplicitLeave) return;
+  requestWakeLock();
+  if (!wsClient || wsClient.readyState !== WebSocket.OPEN) {
+    showStatus('Verbindung wiederherstellen...', 'info', 2000);
+    reconnectNtfy();
+  }
+}
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') checkAndReconnectIfNeeded(); });
+window.addEventListener('pageshow', () => { checkAndReconnectIfNeeded(); });
+window.addEventListener('online', () => { checkAndReconnectIfNeeded(); });
+
+function connectNtfy(code, isHostFlag, onReady) {
+  setConnState('connecting');
+  isExplicitLeave = false;
+  const topic = `${TOPIC_PREFIX}-${code}`;
+  try { if (wsClient) { wsClient.close(); } } catch (e) {}
+
+  const ws = new WebSocket(`wss://ntfy.sh/${topic}/ws`);
+  wsClient = ws;
+  let opened = false;
+  const failTimer = setTimeout(() => {
+    if (!opened && wsClient === ws) { showStatus('Verbindung fehlgeschlagen. Bitte Netz prüfen.'); setConnState(''); }
+  }, 10000);
+
+  ws.onopen = () => {
+    opened = true; clearTimeout(failTimer); setConnState('connected');
+    lastMessageAt = Date.now(); startWatchdog();
+    if (onReady) onReady();
+  };
+  ws.onclose = () => {
+    if (wsClient !== ws) return; // veraltete Verbindung - eine neuere ist bereits aktiv, nichts tun
+    setConnState(''); stopWatchdog();
+    if (!isExplicitLeave && app.roomCode) {
+      setTimeout(() => reconnectNtfy(), 2000);
+    }
+  };
+  ws.onerror = () => { if (wsClient !== ws) return; setConnState(''); };
+  ws.onmessage = (event) => {
+    lastMessageAt = Date.now();
+    let payload; try { payload = JSON.parse(event.data); } catch (e) { return; }
+    if (payload.event === 'message') {
+      let msg; try { msg = JSON.parse(payload.message); } catch (e) { return; }
+      if (!msg) return;
+      if (msg.type === 'state') {
+        if (app.isHost) return;
+        handleStateMessage(msg.state);
+      } else {
+        if (!app.isHost) return;
+        handleActionMessage(msg);
+      }
+    }
+  };
+}
+
+// Wachhund: erkennt eine "eingeschlafene" Verbindung (Socket meldet OPEN, aber es kommen
+// keine Nachrichten mehr an, z.B. nach Standby) und erzwingt einen Reconnect.
+function startWatchdog() {
+  stopWatchdog();
+  watchdogTimer = setInterval(() => {
+    if (!app.roomCode || isExplicitLeave || !wsClient) return;
+    if (wsClient.readyState === WebSocket.OPEN && (Date.now() - lastMessageAt) > WATCHDOG_TIMEOUT_MS) {
+      showStatus('Verbindung wirkt eingefroren – baue neu auf…', 'info', 2500);
+      setConnState('connecting');
+      reconnectNtfy();
+    }
+  }, 5000);
+}
+function stopWatchdog() { if (watchdogTimer) { clearInterval(watchdogTimer); watchdogTimer = null; } }
+
+function reconnectNtfy() {
+  if (!app.roomCode || isExplicitLeave) return;
+  connectNtfy(app.roomCode, app.isHost, () => {
+    if (app.isHost) { publishState(); } else { publishAction({ type: 'join', name: app.myName }); }
+  });
+}
+
+function postToTopic(body, retries = 1) {
+  if (!app.roomCode) return;
+  const topic = `${TOPIC_PREFIX}-${app.roomCode}`;
+  fetch(`${NTFY_URL}/${topic}`, { method: 'POST', body: JSON.stringify(body) })
+    .catch(() => { if (retries > 0) setTimeout(() => postToTopic(body, retries - 1), 800); });
+}
+
+function publishState() {
+  if (!wsClient || wsClient.readyState !== WebSocket.OPEN || isExplicitLeave) return;
+  const snapshot = {
+    players: app.players, duration: app.duration, currentIndex: app.currentIndex,
+    endTimestamp: app.endTimestamp, isRunning: app.isRunning, isFinished: app.isFinished,
+    gameStarted: app.gameStarted, hostTime: Date.now()
+  };
+  postToTopic({ type: 'state', state: snapshot });
+}
+
+function startHostRepublish() { stopHostRepublish(); hostRepublishTimer = setInterval(() => publishState(), STATE_REPUBLISH_MS); }
+function stopHostRepublish() { if (hostRepublishTimer) { clearInterval(hostRepublishTimer); hostRepublishTimer = null; } }
+
+function publishAction(action) {
+  if (!wsClient || wsClient.readyState !== WebSocket.OPEN) return;
+  const payload = { ...action, from: app.myPeerId, ts: Date.now() };
+  postToTopic(payload);
+}
+
+function handleActionMessage(action) {
+  if (action.type === 'join') {
+    if (!action.from || !action.name) return;
+    if (app.players.find(p => p.peerId === action.from)) { publishState(); return; }
+    if (app.gameStarted) return;
+    app.players.push({ peerId: action.from, name: action.name });
+    publishState(); renderLobby();
+  } else if (action.type === 'next') {
+    if (!app.gameStarted) return;
+    const cur = app.players[app.currentIndex];
+    if (cur && cur.peerId === action.from) { advanceTurn(); }
+  } else if (action.type === 'leave') {
+    // EIN SPIELER VERLÄSST DEN RAUM EXPLIZIT (z.B. Button gedrückt) -> JETZT ENTFERNEN
+    removePlayer(action.from);
+  }
+}
+
+function removePlayer(peerId) {
+  const idx = app.players.findIndex(p => p.peerId === peerId); if (idx < 0) return;
+  const wasCurrent = idx === app.currentIndex; app.players.splice(idx, 1);
+  if (app.players.length === 0) { hostResetGame(); return; }
+  if (app.currentIndex >= app.players.length) { app.currentIndex = 0; }
+  if (app.gameStarted && wasCurrent) { app.endTimestamp = Date.now() + app.duration * 1000; app.isRunning = true; app.isFinished = false; resetTurnAlerts(); }
+  publishState(); refreshUI();
+}
+
+function handleStateMessage(snapshot) {
+  if (snapshot.closed) { if (isInJoinPhase) return; showStatus('Der Raum wurde vom Host geschlossen.'); leaveRoom(); return; }
+  const prevStarted = app.gameStarted; const prevEndTs = app.endTimestamp;
+  app.players = snapshot.players || []; app.duration = snapshot.duration || 300;
+  app.currentIndex = snapshot.currentIndex || 0; app.endTimestamp = snapshot.endTimestamp || null;
+  app.isRunning = snapshot.isRunning || false; app.isFinished = snapshot.isFinished || false;
+  app.gameStarted = snapshot.gameStarted || false;
+
+  if (snapshot.hostTime) { timeOffset = snapshot.hostTime - Date.now(); }
+  if (app.endTimestamp !== prevEndTs) resetTurnAlerts();
+
+  const meInList = app.players.find(p => p.peerId === app.myPeerId);
+  if (isInJoinPhase) {
+    if (meInList) {
+      isInJoinPhase = false; if (joinAckTimer) { clearTimeout(joinAckTimer); joinAckTimer = null; }
+      hideStatus(); if (app.gameStarted) { ensureAudio(); requestWakeLock(); setScreen('game'); } else { setScreen('lobby'); }
+      refreshUI();
+    }
+    return;
+  }
+  
+  // WICHTIG: Wenn wir kurz die Verbindung verloren haben (meInList fehlt temporär auf dem Server, weil wir im Standby waren),
+  // kicken wir den Spieler NICHT mehr sofort, sondern geben ihm durch den Reconnect 300 Sekunden Zeit, sich wieder anzumelden.
+  if (!meInList) { return; } 
+  
+  if (app.gameStarted && !prevStarted) { ensureAudio(); requestWakeLock(); setScreen('game'); }
+  else if (!app.gameStarted && prevStarted) { setScreen('lobby'); }
+  refreshUI();
+}
+
+function createRoom() {
+  app.isHost = true; app.myPeerId = generateClientId(); app.roomCode = generateRoomCode();
+  app.players = [{ peerId: app.myPeerId, name: app.myName }];
+  showStatus('Verbinde zum Server...', 'info', 0);
+  connectNtfy(app.roomCode, true, () => {
+    hideStatus(); publishState(); startHostRepublish(); setScreen('lobby'); renderLobby();
+  });
+}
+
+function hostStartGame() {
+  if (app.players.length < 1) return; ensureAudio(); requestWakeLock();
+  app.gameStarted = true; app.currentIndex = 0; app.endTimestamp = Date.now() + app.duration * 1000;
+  app.isRunning = true; app.isFinished = false; resetTurnAlerts();
+  publishState(); setScreen('game'); renderGame();
+}
+
+function advanceTurn() {
+  app.currentIndex = (app.currentIndex + 1) % app.players.length;
+  app.endTimestamp = Date.now() + app.duration * 1000; app.isRunning = true; app.isFinished = false; resetTurnAlerts();
+  publishState(); refreshUI();
+}
+
+function hostResetGame() {
+  app.gameStarted = false; app.isRunning = false; app.isFinished = false; app.endTimestamp = null; app.currentIndex = 0; resetTurnAlerts();
+  publishState(); setScreen('lobby'); renderLobby();
+}
+
+function hostMovePlayer(peerId, direction) {
+  const idx = app.players.findIndex(p => p.peerId === peerId); if (idx < 0) return;
+  const newIdx = idx + direction; if (newIdx < 0 || newIdx >= app.players.length) return;
+  [app.players[idx], app.players[newIdx]] = [app.players[newIdx], app.players[idx]];
+  publishState(); renderLobby();
+}
+
+function hostKickPlayer(peerId) { if (peerId !== app.myPeerId) removePlayer(peerId); }
+
+function hostAddLocalPlayer() {
+  const name = el.localPlayerInput.value.trim();
+  if (!name) { showStatus('Bitte einen Namen eingeben.'); el.localPlayerInput.focus(); return; }
+  if (app.gameStarted) return;
+  const localId = 'local-' + generateClientId();
+  app.players.push({ peerId: localId, name: name, isLocal: true });
+  el.localPlayerInput.value = '';
+  publishState(); renderLobby();
+  el.localPlayerInput.focus();
+}
+
+function joinRoom(code) {
+  app.isHost = false; app.myPeerId = generateClientId(); app.roomCode = code; isInJoinPhase = true;
+  showStatus('Verbinde...', 'info', 0);
+  connectNtfy(code, false, () => {
+    joinAckTimer = setTimeout(() => { if (isInJoinPhase) { showStatus('Raum nicht gefunden oder offline.'); leaveRoom(); } }, 10000);
+    setTimeout(() => { if (isInJoinPhase && wsClient && wsClient.readyState === WebSocket.OPEN) { publishAction({ type: 'join', name: app.myName }); } }, 400);
+  });
+}
+
+function leaveRoom() {
+  isExplicitLeave = true;
+  releaseWakeLock(); stopHostRepublish(); stopWatchdog(); if (joinAckTimer) { clearTimeout(joinAckTimer); joinAckTimer = null; }
+  isInJoinPhase = false;
+  if (wsClient && wsClient.readyState === WebSocket.OPEN) {
+    const topic = `${TOPIC_PREFIX}-${app.roomCode}`;
+    if (app.isHost && app.roomCode) { fetch(`${NTFY_URL}/${topic}`, { method: 'POST', body: JSON.stringify({ type: 'state', state: { closed: true } }) }).catch(() => {}); }
+    else if (app.roomCode && app.myPeerId) { publishAction({ type: 'leave' }); }
+  }
+  try { if (wsClient) wsClient.close(); } catch (e) {} wsClient = null;
+  Object.assign(app, { isHost: false, myPeerId: null, roomCode: null, players: [], currentIndex: 0, endTimestamp: null, isRunning: false, isFinished: false, gameStarted: false });
+  setConnState(''); setScreen('welcome');
+}
+
+function tick() {
+  if (app.gameStarted && app.endTimestamp) {
+    const hostNow = app.isHost ? Date.now() : (Date.now() + timeOffset);
+    const remaining = app.endTimestamp - hostNow;
+    el.gameTimeText.textContent = formatTime(remaining);
+    const totalMs = app.duration * 1000;
+    const progress = Math.max(0, Math.min(1, remaining / totalMs));
+    el.progressRingFill.style.strokeDashoffset = CIRCUMFERENCE * (1 - progress);
+
+    // Halbzeit-Ansage, nur wenn die Zugzeit über 2 Minuten liegt
+    if (!halftimeTriggered && totalMs > 120000 && remaining > 0 && remaining <= totalMs / 2) {
+      halftimeTriggered = true; alertHalftime();
+    }
+    // 30-Sekunden-Hinweis (nur sinnvoll, wenn die Zugzeit länger als 30s ist)
+    if (!thirtySecTriggered && totalMs > 30000 && remaining > 0 && remaining <= 30000) {
+      thirtySecTriggered = true; alertThirtySeconds();
+    }
+    // Countdown der letzten 10 Sekunden: jede volle Sekunde ein ansteigender Ton
+    if (totalMs > 10000 && remaining > 0) {
+      const secondsLeft = Math.ceil(remaining / 1000);
+      if (secondsLeft <= 10 && secondsLeft !== lastCountdownSecond) {
+        lastCountdownSecond = secondsLeft; alertCountdownTick(secondsLeft);
+      }
+    }
+
+    if (remaining <= 0) {
+      el.gameTimeText.classList.add('finished');
+      if (!alarmTriggered) { alarmTriggered = true; alertFinished(); vibrate(); if (app.isHost && app.isRunning) { app.isRunning = false; app.isFinished = true; publishState(); } }
+    } else { el.gameTimeText.classList.remove('finished'); }
+  }
+  requestAnimationFrame(tick);
+}
+
+function refreshUI() {
+  if (document.getElementById('screen-lobby').classList.contains('active')) renderLobby();
+  else if (document.getElementById('screen-game').classList.contains('active')) renderGame();
+}
+
+function renderLobby() {
+  el.lobbyRoomCode.textContent = app.roomCode || '----'; el.playerList.innerHTML = '';
+  app.players.forEach((p, idx) => {
+    const row = document.createElement('div'); row.className = 'player-row' + (p.peerId === app.myPeerId ? ' me' : '');
+    const num = document.createElement('div'); num.className = 'num'; num.textContent = idx + 1; row.appendChild(num);
+    const name = document.createElement('div'); name.className = 'name'; name.style.flex = '1'; name.style.fontSize = '16px'; name.textContent = p.name;
+    if (p.peerId === app.myPeerId) { const tag = document.createElement('span'); tag.className = 'me-tag'; tag.style.color = '#a78bfa'; tag.style.fontSize = '10px'; tag.style.marginLeft = '6px'; tag.textContent = '(du)'; name.appendChild(tag); }
+    if (p.isLocal) { const tag = document.createElement('span'); tag.style.color = 'rgba(255,255,255,0.4)'; tag.style.fontSize = '10px'; tag.style.marginLeft = '6px'; tag.textContent = '(kein Handy)'; name.appendChild(tag); }
+    row.appendChild(name);
+
+    if (app.isHost) {
+      const ctrls = document.createElement('div'); ctrls.className = 'reorder-btns';
+      const up = document.createElement('button'); up.type = 'button'; up.innerHTML = '&uarr;'; up.disabled = idx === 0; up.onclick = () => hostMovePlayer(p.peerId, -1);
+      const down = document.createElement('button'); down.type = 'button'; down.innerHTML = '&darr;'; down.disabled = idx === app.players.length - 1; down.onclick = () => hostMovePlayer(p.peerId, 1);
+      ctrls.appendChild(up); ctrls.appendChild(down);
+      if (p.peerId !== app.myPeerId) { const kick = document.createElement('button'); kick.type = 'button'; kick.className = 'kick'; kick.innerHTML = '&times;'; kick.onclick = () => hostKickPlayer(p.peerId); ctrls.appendChild(kick); }
+      row.appendChild(ctrls);
+    }
+    el.playerList.appendChild(row);
+  });
+  el.hostControls.style.display = app.isHost ? 'block' : 'none'; el.joinerWait.style.display = app.isHost ? 'none' : 'block';
+  if (app.isHost) { el.lobbyDurationSlider.value = app.duration; el.lobbySliderValue.textContent = formatDurationLabel(app.duration); el.btnStartGame.disabled = app.players.length < 1; }
+  else { el.joinerWaitText.textContent = `Warte auf Spielstart… (${formatDurationLabel(app.duration)} pro Zug)`; }
+}
+
+function renderGame() {
+  const cur = app.players[app.currentIndex]; el.currentPlayerName.textContent = cur ? cur.name : '-'; el.gamePlayerPills.innerHTML = '';
+  app.players.forEach((p, idx) => {
+    const pill = document.createElement('div'); pill.className = 'player-pill' + (idx === app.currentIndex ? ' current' : ''); pill.textContent = p.name + (p.isLocal ? ' · kein Handy' : ''); el.gamePlayerPills.appendChild(pill);
+  });
+  const isMyTurn = cur && cur.peerId === app.myPeerId; el.btnNext.style.display = isMyTurn ? 'block' : 'none'; el.waitingBanner.style.display = isMyTurn ? 'none' : 'flex';
+  if (!isMyTurn && cur) { el.waitingForName.textContent = cur.name; }
+  
+  if (app.isHost) {
+    el.btnHostNext.style.display = isMyTurn ? 'none' : 'block';
+    el.btnHostReset.style.display = isMyTurn ? 'none' : 'block';
+    el.btnLeaveGame.style.display = 'none';
+  } else {
+    el.btnHostNext.style.display = 'none';
+    el.btnHostReset.style.display = 'none';
+    el.btnLeaveGame.style.display = isMyTurn ? 'none' : 'block';
+  }
+}
+
+el.nameInput.value = getSavedName();
+function attachClick(elem, handler) {
+  let handled = false;
+  elem.addEventListener('touchend', (e) => { if (elem.disabled) return; e.preventDefault(); if (handled) return; handled = true; setTimeout(() => { handled = false; }, 500); handler(e); }, { passive: false });
+  elem.addEventListener('click', (e) => { if (elem.disabled) return; if (handled) return; handled = true; setTimeout(() => { handled = false; }, 500); handler(e); });
+}
+
+attachClick(el.btnCreate, () => { const name = el.nameInput.value.trim(); if (!name) { showStatus('Bitte gib einen Namen ein.'); el.nameInput.focus(); return; } app.myName = name; saveName(name); ensureAudio(); createRoom(); });
+attachClick(el.btnJoin, () => { const name = el.nameInput.value.trim(); const code = el.codeInput.value.trim().toUpperCase(); if (!name) { showStatus('Bitte gib einen Namen ein.'); el.nameInput.focus(); return; } if (code.length !== 4) { showStatus('Bitte 4-stelligen Code eingeben.'); el.codeInput.focus(); return; } app.myName = name; saveName(name); ensureAudio(); joinRoom(code); });
+
+el.codeInput.addEventListener('input', (e) => { e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4); });
+el.lobbyDurationSlider.addEventListener('input', (e) => { const s = parseInt(e.target.value); app.duration = s; el.lobbySliderValue.textContent = formatDurationLabel(s); clearTimeout(durationBroadcastTimer); durationBroadcastTimer = setTimeout(() => publishState(), 200); });
+attachClick(el.btnStartGame, () => { ensureAudio(); hostStartGame(); });
+attachClick(el.btnLeaveLobby, () => { leaveRoom(); });
+attachClick(el.btnAddLocalPlayer, () => { hostAddLocalPlayer(); });
+el.localPlayerInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); hostAddLocalPlayer(); } });
+attachClick(el.btnNext, () => { if (!app.gameStarted) return; const cur = app.players[app.currentIndex]; if (!cur || cur.peerId !== app.myPeerId) return; vibrate([50]); if (app.isHost) { advanceTurn(); } else { publishAction({ type: 'next' }); } });
+attachClick(el.btnHostNext, () => { if (app.isHost && app.gameStarted) { vibrate([50]); advanceTurn(); } });
+attachClick(el.btnHostReset, () => { if (app.isHost) hostResetGame(); });
+attachClick(el.btnLeaveGame, () => { leaveRoom(); });
+
+window.addEventListener('beforeunload', () => {
+  if (app.roomCode && wsClient && wsClient.readyState === WebSocket.OPEN) {
+    const topic = `${TOPIC_PREFIX}-${app.roomCode}`;
+    if (app.isHost) { fetch(`${NTFY_URL}/${topic}`, { method: 'POST', body: JSON.stringify({ type: 'state', state: { closed: true } }), keepalive: true }).catch(() => {}); }
+    else { fetch(`${NTFY_URL}/${topic}`, { method: 'POST', body: JSON.stringify({ type: 'leave', from: app.myPeerId, ts: Date.now() }), keepalive: true }).catch(() => {}); }
+  }
+});
+
+requestAnimationFrame(tick);
+</script>
+</body>
+</html>
