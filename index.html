@@ -8,7 +8,9 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0f0f1e">
 <title>Spieltimer P2P</title>
+<!-- PeerJS Bibliothek für WebRTC P2P Verbindungen -->
 <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+<!-- QRCode.js für das Erzeugen des QR-Codes -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
   * {
@@ -149,6 +151,8 @@
   #connectionDot.connecting { background: #fbbf24; }
 
   #versionTag { position: fixed; top: env(safe-area-inset-top, 20px); left: 34px; font-size: 10px; letter-spacing: 0.5px; color: rgba(255,255,255,0.3); z-index: 50; }
+  
+  #authorTag { position: fixed; bottom: env(safe-area-inset-bottom, 8px); right: 12px; font-size: 10px; letter-spacing: 0.5px; color: rgba(255,255,255,0.25); z-index: 50; pointer-events: none; }
 </style>
 </head>
 <body>
@@ -156,6 +160,7 @@
 <div id="statusBar"></div>
 <div id="connectionDot" title="Verbindungsstatus"></div>
 <div id="versionTag"></div>
+<div id="authorTag">by Sascha Urban</div>
 
 <div id="screen-welcome" class="screen active">
   <div class="title">Spieltimer</div>
@@ -254,7 +259,7 @@
 <script>
 'use strict';
 
-const APP_VERSION = 'P2P-1.4';
+const APP_VERSION = 'P2P-1.5';
 const TOPIC_PREFIX = 'spieltimer-p2p';
 const CIRCUMFERENCE = 2 * Math.PI * 92;
 const STATE_REPUBLISH_MS = 3000;
