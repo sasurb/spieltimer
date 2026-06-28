@@ -37,6 +37,22 @@
   }
   .screen.active { display: flex; }
 
+  /* Modal-Styling für Sound-Optionen */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85);
+    display: none; align-items: center; justify-content: center;
+    z-index: 200; padding: 16px;
+  }
+  .modal-content {
+    background: #14142f; border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 20px; padding: 20px; width: 100%; max-width: 340px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  }
+  .modal-title { font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #a78bfa; text-align: center; margin-bottom: 16px; }
+  .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 14px; }
+  .setting-row select { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 10px; border-radius: 8px; font-family: inherit; font-size: 13px; outline: none; }
+  .setting-row input[type="checkbox"] { width: 18px; height: 18px; accent-color: #a78bfa; cursor: pointer; }
+
   .btn-exit-top {
     position: absolute; top: env(safe-area-inset-top, 12px); right: 16px; 
     height: 32px; padding: 0 16px; border: 1px solid rgba(255,255,255,0.15); 
@@ -109,16 +125,9 @@
   .reorder-btns button:disabled { opacity: 0.25; }
   .reorder-btns button.kick { color: #f87171; font-size: 16px; }
 
-  .slider-container { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 8px 12px; margin-bottom: 4px; }
-  .slider-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 11px; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 1.5px; }
-  .slider-value { color: #a78bfa; font-weight: 600; font-size: 14px; text-decoration: underline dashed; text-underline-offset: 3px; cursor: pointer; }
-  input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 5px; background: rgba(255,255,255,0.1); border-radius: 3px; outline: none; }
-  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 24px; height: 24px; background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%); border-radius: 50%; cursor: pointer; box-shadow: 0 2px 8px rgba(167,139,250,0.5); }
-
   .inline-add-row { display: flex; gap: 8px; align-items: stretch; margin-bottom: 6px; }
   .inline-add-row input[type="text"] { flex: 1; padding: 10px 14px; font-size: 14px; text-align: left; letter-spacing: normal; text-transform: none; border-radius: 10px; }
   .inline-add-row button { flex: 0 0 44px; width: 44px; border: none; border-radius: 10px; background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%); color: #fff; font-size: 20px; font-weight: 700; cursor: pointer; touch-action: manipulation; }
-  .inline-add-row button:active { transform: scale(0.95); }
 
   .current-banner { text-align: center; padding: 8px 0 4px; }
   .current-banner .lbl { font-size: 10px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 4px; }
@@ -151,7 +160,6 @@
   #connectionDot.connecting { background: #fbbf24; }
 
   #versionTag { position: fixed; top: env(safe-area-inset-top, 20px); left: 34px; font-size: 10px; letter-spacing: 0.5px; color: rgba(255,255,255,0.3); z-index: 50; }
-  
   #authorTag { position: fixed; bottom: env(safe-area-inset-bottom, 8px); right: 12px; font-size: 10px; letter-spacing: 0.5px; color: rgba(255,255,255,0.25); z-index: 50; pointer-events: none; }
 </style>
 </head>
@@ -161,6 +169,47 @@
 <div id="connectionDot" title="Verbindungsstatus"></div>
 <div id="versionTag"></div>
 <div id="authorTag">by Sascha Urban</div>
+
+<!-- Sound-Einstellungen Modal -->
+<div id="soundModal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-title">Sound-Optionen</div>
+    <div class="setting-row">
+      <span>Halbzeit-Hinweis</span>
+      <select id="soundHalftime">
+        <option value="voice">Stimme</option>
+        <option value="tone">Ton</option>
+        <option value="none">Aus</option>
+      </select>
+    </div>
+    <div class="setting-row">
+      <span>30 Sekunden übrig</span>
+      <select id="soundThirty">
+        <option value="voice">Stimme</option>
+        <option value="tone">Ton</option>
+        <option value="none">Aus</option>
+      </select>
+    </div>
+    <div class="setting-row">
+      <span>Letzte 10 Sekunden</span>
+      <select id="soundTen">
+        <option value="voice">Stimme</option>
+        <option value="tone">Ton</option>
+        <option value="none">Aus</option>
+      </select>
+    </div>
+    <div class="setting-row">
+      <span>Countdown-Ticken (10s)</span>
+      <input type="checkbox" id="soundTicks" checked>
+    </div>
+    <div class="setting-row">
+      <span>Schlusston bei Ablauf</span>
+      <input type="checkbox" id="soundFinished" checked>
+    </div>
+    <div style="height: 14px"></div>
+    <button class="btn-primary" id="btnCloseSoundModal" type="button" style="padding: 12px;">Speichern</button>
+  </div>
+</div>
 
 <div id="screen-welcome" class="screen active">
   <div class="title">Spieltimer</div>
@@ -205,13 +254,10 @@
 
   <div class="player-list" id="playerList"></div>
 
-  <div id="hostControls" style="display:none; margin-top: auto;">
-    <div class="slider-container">
-      <div class="slider-label">
-        <span>Zeit pro Zug</span>
-        <span class="slider-value" id="lobbySliderValue" title="Doppelklick zum direkten Eintippen">5:00 min</span>
-      </div>
-      <input type="range" id="lobbyDurationSlider" min="10" max="600" step="10" value="300">
+  <div id="hostControls" style="display:none; margin-top: auto; flex-direction: column; gap: 8px;">
+    <div style="display: flex; gap: 8px; width: 100%;">
+      <button class="btn-secondary" id="btnOpenTimeInput" type="button" style="flex: 1; padding: 14px 10px; font-size: 13px;">Zeit einstellen</button>
+      <button class="btn-secondary" id="btnOpenSoundModal" type="button" style="flex: 1; padding: 14px 10px; font-size: 13px;">Sounds</button>
     </div>
     <button class="btn-primary" id="btnStartGame" type="button">Spiel starten</button>
   </div>
@@ -259,7 +305,7 @@
 <script>
 'use strict';
 
-const APP_VERSION = 'P2P-1.5';
+const APP_VERSION = 'P2P-1.6';
 const TOPIC_PREFIX = 'spieltimer-p2p';
 const CIRCUMFERENCE = 2 * Math.PI * 92;
 const STATE_REPUBLISH_MS = 3000;
@@ -268,7 +314,14 @@ const WATCHDOG_TIMEOUT_MS = 11000;
 const app = {
   myName: '', myPeerId: null, isHost: false, roomCode: null,
   players: [], duration: 300, currentIndex: 0, endTimestamp: null,
-  isRunning: false, isFinished: false, gameStarted: false
+  isRunning: false, isFinished: false, gameStarted: false,
+  soundSettings: {
+    halftime: 'voice',
+    thirtySec: 'voice',
+    tenSec: 'voice',
+    ticks: true,
+    finished: true
+  }
 };
 
 let peer = null;
@@ -290,7 +343,6 @@ let wakeLock = null;
 let isInJoinPhase = false;
 let joinAckTimer = null;
 let isExplicitLeave = false;
-let lastSliderTap = 0;
 
 const el = {
   nameInput: document.getElementById('nameInput'),
@@ -304,8 +356,6 @@ const el = {
   joinerWaitText: document.getElementById('joinerWaitText'),
   localPlayerInput: document.getElementById('localPlayerInput'),
   btnAddLocalPlayer: document.getElementById('btnAddLocalPlayer'),
-  lobbyDurationSlider: document.getElementById('lobbyDurationSlider'),
-  lobbySliderValue: document.getElementById('lobbySliderValue'),
   btnStartGame: document.getElementById('btnStartGame'),
   btnLeaveLobbyTop: document.getElementById('btnLeaveLobbyTop'),
   currentPlayerName: document.getElementById('currentPlayerName'),
@@ -325,7 +375,11 @@ const el = {
   qrcodeWrapper: document.getElementById('qrcodeWrapper'),
   btnToggleQR: document.getElementById('btnToggleQR'),
   btnToggleAddLocal: document.getElementById('btnToggleAddLocal'),
-  addLocalPlayerBox: document.getElementById('addLocalPlayerBox')
+  addLocalPlayerBox: document.getElementById('addLocalPlayerBox'),
+  btnOpenTimeInput: document.getElementById('btnOpenTimeInput'),
+  btnOpenSoundModal: document.getElementById('btnOpenSoundModal'),
+  soundModal: document.getElementById('soundModal'),
+  btnCloseSoundModal: document.getElementById('btnCloseSoundModal')
 };
 
 el.progressRingFill.style.strokeDasharray = CIRCUMFERENCE;
@@ -335,6 +389,34 @@ const urlParams = new URLSearchParams(window.location.search);
 const urlCode = urlParams.get('code');
 if (urlCode && urlCode.length === 4) {
     el.codeInput.value = urlCode.toUpperCase();
+}
+
+// Sound-Einstellungen aus localStorage laden/speichern
+function loadSoundSettings() {
+  try {
+    const saved = localStorage.getItem('spieltimer.sounds');
+    if (saved) {
+      app.soundSettings = { ...app.soundSettings, ...JSON.parse(saved) };
+    }
+  } catch(e){}
+  
+  document.getElementById('soundHalftime').value = app.soundSettings.halftime;
+  document.getElementById('soundThirty').value = app.soundSettings.thirtySec;
+  document.getElementById('soundTen').value = app.soundSettings.tenSec;
+  document.getElementById('soundTicks').checked = app.soundSettings.ticks;
+  document.getElementById('soundFinished').checked = app.soundSettings.finished;
+}
+
+function saveSoundSettings() {
+  app.soundSettings.halftime = document.getElementById('soundHalftime').value;
+  app.soundSettings.thirtySec = document.getElementById('soundThirty').value;
+  app.soundSettings.tenSec = document.getElementById('soundTen').value;
+  app.soundSettings.ticks = document.getElementById('soundTicks').checked;
+  app.soundSettings.finished = document.getElementById('soundFinished').checked;
+  
+  try {
+    localStorage.setItem('spieltimer.sounds', JSON.stringify(app.soundSettings));
+  } catch(e){}
 }
 
 function setScreen(name) {
@@ -404,14 +486,24 @@ function playTones(freqs, noteDur = 0.2, gap = 0.06) {
   });
 }
 
-function alertHalftime() { vibrate([120]); playTones([523, 659], 0.2, 0.06); speak('Halbzeit'); }
-function alertThirtySeconds() { vibrate([150]); playTones([784], 0.22); speak('Noch 30 Sekunden'); }
+function alertHalftime() {
+  if (app.soundSettings.halftime === 'voice') { speak('Halbzeit'); }
+  else if (app.soundSettings.halftime === 'tone') { playTones([523, 659], 0.2, 0.06); }
+  vibrate([120]);
+}
+function alertThirtySeconds() {
+  if (app.soundSettings.thirtySec === 'voice') { speak('Noch 30 Sekunden'); }
+  else if (app.soundSettings.thirtySec === 'tone') { playTones([784], 0.22); }
+  vibrate([150]);
+}
 function alertCountdownTick(secondsLeft) {
   const freq = 420 + (10 - secondsLeft) * 44; 
-  vibrate([60]); playTones([freq], 0.12);
-  if (secondsLeft === 10) speak('Noch 10 Sekunden');
+  if (app.soundSettings.ticks) { playTones([freq], 0.12); }
+  vibrate([60]);
+  if (secondsLeft === 10 && app.soundSettings.tenSec === 'voice') speak('Noch 10 Sekunden');
+  else if (secondsLeft <= 10 && app.soundSettings.tenSec === 'tone' && secondsLeft > 0) { playTones([600], 0.08); }
 }
-function alertFinished() { playTones([880, 880, 880], 0.3, 0.1); }
+function alertFinished() { if (app.soundSettings.finished) { playTones([880, 880, 880], 0.3, 0.1); } }
 function resetTurnAlerts() { alarmTriggered = false; halftimeTriggered = false; thirtySecTriggered = false; lastCountdownSecond = null; }
 function vibrate(pattern = [200, 100, 200, 100, 200]) { if (navigator.vibrate) navigator.vibrate(pattern); }
 
@@ -748,6 +840,23 @@ function promptLeaveRoom() {
     }
 }
 
+function promptTimeInput() {
+    if (!app.isHost) return;
+    const currentMin = app.duration / 60;
+    const input = prompt("Zeit in Minuten eingeben (z.B. 5 oder 1.5):", currentMin.toString());
+    if (input !== null) {
+        let parsed = parseFloat(input.replace(',', '.'));
+        if (!isNaN(parsed) && parsed > 0) {
+            let totalSeconds = Math.round(parsed * 60);
+            totalSeconds = Math.max(10, Math.min(totalSeconds, 3600)); 
+            app.duration = totalSeconds;
+            clearTimeout(durationBroadcastTimer); 
+            durationBroadcastTimer = setTimeout(() => publishState(), 200);
+            showStatus("Zeit geändert auf: " + formatDurationLabel(totalSeconds), "success", 2000);
+        }
+    }
+}
+
 function tick() {
   if (app.gameStarted && app.endTimestamp) {
     const hostNow = app.isHost ? Date.now() : (Date.now() + timeOffset);
@@ -823,20 +932,18 @@ function renderLobby() {
     el.playerList.appendChild(row);
   });
   
-  el.hostControls.style.display = app.isHost ? 'block' : 'none'; 
+  el.hostControls.style.display = app.isHost ? 'flex' : 'none'; 
   el.joinerWait.style.display = app.isHost ? 'none' : 'block';
   el.btnToggleQR.style.display = app.isHost ? 'flex' : 'none';
   el.btnToggleAddLocal.style.display = app.isHost ? 'block' : 'none';
   
   if (app.isHost) { 
-      el.lobbyDurationSlider.value = app.duration; el.lobbySliderValue.textContent = formatDurationLabel(app.duration);
       if (app.gameStarted) {
           el.btnStartGame.textContent = 'Zurück zum Spiel';
-          el.btnStartGame.disabled = false;
       } else {
           el.btnStartGame.textContent = 'Spiel starten';
-          el.btnStartGame.disabled = app.players.length < 1; 
       }
+      el.btnStartGame.disabled = app.players.length < 1; 
   } else { 
       el.joinerWaitText.textContent = `Warte auf Spielstart… (${formatDurationLabel(app.duration)} pro Zug)`; 
   }
@@ -875,44 +982,15 @@ function attachClick(elem, handler) {
   elem.addEventListener('click', (e) => { if (elem.disabled) return; if (handled) return; handled = true; setTimeout(() => { handled = false; }, 500); handler(e); });
 }
 
-function promptTimeInput() {
-    if (!app.isHost) return;
-    const currentMin = app.duration / 60;
-    const input = prompt("Zeit in Minuten eingeben (z.B. 5 oder 1.5):", currentMin.toString());
-    if (input !== null) {
-        let parsed = parseFloat(input.replace(',', '.'));
-        if (!isNaN(parsed) && parsed > 0) {
-            let totalSeconds = Math.round(parsed * 60);
-            totalSeconds = Math.max(10, Math.min(totalSeconds, 3600)); // Max 1 Stunde
-            app.duration = totalSeconds;
-            el.lobbyDurationSlider.value = totalSeconds;
-            el.lobbySliderValue.textContent = formatDurationLabel(totalSeconds);
-            clearTimeout(durationBroadcastTimer); 
-            durationBroadcastTimer = setTimeout(() => publishState(), 200);
-        }
-    }
-}
-
-el.lobbySliderValue.addEventListener('dblclick', (e) => {
-    e.preventDefault();
-    promptTimeInput();
-});
-
-el.lobbySliderValue.addEventListener('touchend', (e) => {
-    const currentTime = new Date().getTime();
-    const tapLength = currentTime - lastSliderTap;
-    if (tapLength < 400 && tapLength > 0) {
-        e.preventDefault();
-        promptTimeInput();
-    }
-    lastSliderTap = currentTime;
-});
-
 attachClick(el.btnCreate, () => { const name = el.nameInput.value.trim(); if (!name) { showStatus('Bitte gib einen Namen ein.'); el.nameInput.focus(); return; } saveName(name); ensureAudio(); createRoom(); });
 attachClick(el.btnJoin, () => { const name = el.nameInput.value.trim(); const code = el.codeInput.value.trim().toUpperCase(); if (!name) { showStatus('Bitte gib einen Namen ein.'); el.nameInput.focus(); return; } if (code.length !== 4) { showStatus('Bitte 4-stelligen Code eingeben.'); el.codeInput.focus(); return; } saveName(name); ensureAudio(); joinRoom(code); });
 
 el.codeInput.addEventListener('input', (e) => { e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4); });
-el.lobbyDurationSlider.addEventListener('input', (e) => { const s = parseInt(e.target.value); app.duration = s; el.lobbySliderValue.textContent = formatDurationLabel(s); clearTimeout(durationBroadcastTimer); durationBroadcastTimer = setTimeout(() => publishState(), 200); });
+
+// Lobby-Buttons Event Handler
+attachClick(el.btnOpenTimeInput, () => { promptTimeInput(); });
+attachClick(el.btnOpenSoundModal, () => { el.soundModal.style.display = 'flex'; });
+attachClick(el.btnCloseSoundModal, () => { saveSoundSettings(); el.soundModal.style.display = 'none'; });
 
 attachClick(el.btnToggleQR, () => {
     const isHidden = el.qrcodeWrapper.style.display === 'none';
@@ -927,12 +1005,7 @@ attachClick(el.btnToggleAddLocal, () => {
 
 attachClick(el.btnStartGame, () => { 
     ensureAudio(); 
-    if (app.gameStarted) {
-        setScreen('game');
-        renderGame();
-    } else {
-        hostStartGame(); 
-    }
+    if (app.gameStarted) { setScreen('game'); renderGame(); } else { hostStartGame(); }
 });
 
 attachClick(el.btnLeaveLobbyTop, () => { promptLeaveRoom(); });
@@ -942,13 +1015,7 @@ attachClick(el.btnNext, () => { if (!app.gameStarted) return; const cur = app.pl
 attachClick(el.btnHostNext, () => { if (app.isHost && app.gameStarted) { vibrate([50]); advanceTurn(); } });
 
 attachClick(el.btnHostEndGame, () => { if (app.isHost) hostResetGame(); });
-attachClick(el.btnHostToLobby, () => { 
-    if (app.isHost) { 
-        setScreen('lobby'); 
-        renderLobby(); 
-    } 
-});
-
+attachClick(el.btnHostToLobby, () => { if (app.isHost) { setScreen('lobby'); renderLobby(); } });
 attachClick(el.btnLeaveGame, () => { promptLeaveRoom(); });
 
 window.addEventListener('beforeunload', () => {
@@ -964,6 +1031,7 @@ window.addEventListener('beforeunload', () => {
   }
 });
 
+loadSoundSettings();
 requestAnimationFrame(tick);
 </script>
 </body>
