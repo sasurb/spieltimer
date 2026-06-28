@@ -37,21 +37,38 @@
   }
   .screen.active { display: flex; }
 
-  /* Modal-Styling für Sound-Optionen */
+  /* Modals / Overlays */
   .modal-overlay {
-    position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85);
+    position: fixed; inset: 0;
+    background: rgba(5, 5, 16, 0.9);
     display: none; align-items: center; justify-content: center;
-    z-index: 200; padding: 16px;
+    z-index: 200; padding: 20px;
   }
   .modal-content {
-    background: #14142f; border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 20px; padding: 20px; width: 100%; max-width: 340px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    background: #1a1a3e;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 20px; padding: 20px;
+    width: 100%; max-width: 340px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5);
   }
-  .modal-title { font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: #a78bfa; text-align: center; margin-bottom: 16px; }
-  .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 14px; }
-  .setting-row select { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 6px 10px; border-radius: 8px; font-family: inherit; font-size: 13px; outline: none; }
-  .setting-row input[type="checkbox"] { width: 18px; height: 18px; accent-color: #a78bfa; cursor: pointer; }
+  .modal-title {
+    font-size: 16px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1.5px; margin-bottom: 16px; text-align: center;
+    background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .setting-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+    font-size: 14px;
+  }
+  .setting-row select {
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2);
+    color: #fff; padding: 6px 10px; border-radius: 8px; font-family: inherit; outline: none;
+  }
+  .setting-row input[type="checkbox"] {
+    width: 18px; height: 18px; accent-color: #a78bfa;
+  }
 
   .btn-exit-top {
     position: absolute; top: env(safe-area-inset-top, 12px); right: 16px; 
@@ -67,49 +84,15 @@
     text-transform: uppercase; text-align: center;
     background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-top: 4px;
-  }
-  .subtitle {
-    font-size: 11px; color: rgba(255,255,255,0.5);
-    text-transform: uppercase; letter-spacing: 2px;
-    text-align: center;
+    background-clip: text; margin-top: 4px;
   }
 
-  input[type="text"] {
-    width: 100%; padding: 16px 18px;
-    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 14px; color: #fff; font-family: inherit;
-    font-size: 17px; outline: none; text-align: center;
-    letter-spacing: 1px; -webkit-user-select: text; user-select: text;
-    -webkit-appearance: none; appearance: none;
-  }
-  input[type="text"]:focus { border-color: rgba(167,139,250,0.6); background: rgba(255,255,255,0.09); }
-  input[type="text"]#codeInput { text-transform: uppercase; font-weight: 600; letter-spacing: 6px; font-size: 22px; }
-
-  .btn-primary, .btn-secondary, .btn-next, .btn-ghost {
-    width: 100%; border: none; border-radius: 16px;
-    font-family: inherit; font-weight: 700; letter-spacing: 2px;
-    text-transform: uppercase; cursor: pointer;
-    transition: transform 0.1s, box-shadow 0.2s, opacity 0.2s;
-    color: #fff; -webkit-appearance: none; appearance: none;
-    touch-action: manipulation;
-  }
-  .btn-primary { padding: 18px; font-size: 15px; background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%); box-shadow: 0 6px 24px rgba(167, 139, 250, 0.45); }
-  .btn-secondary { padding: 18px; font-size: 15px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); }
-  .btn-ghost { padding: 12px; font-size: 12px; background: transparent; border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.7); }
-  .btn-primary:active, .btn-secondary:active, .btn-next:active, .btn-ghost:active { transform: scale(0.97); }
-  .btn-primary:disabled, .btn-next:disabled { opacity: 0.4; box-shadow: none; cursor: not-allowed; }
-
-  .divider { text-align: center; font-size: 11px; color: rgba(255,255,255,0.3); letter-spacing: 3px; text-transform: uppercase; margin: 4px 0; }
-  #screen-welcome { justify-content: center; gap: 16px; max-width: 420px; margin: 0 auto; width: 100%; }
-  
   .room-code-display { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 10px 16px; display: flex; flex-direction: column; align-items: center; }
   .code-row { display: flex; justify-content: center; align-items: center; width: 100%; gap: 10px; }
   .room-code-value { font-size: 24px; font-weight: 800; letter-spacing: 4px; background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; padding: 0; margin: 0; }
   
   #qrcodeWrapper { display: none; flex-direction: column; align-items: center; margin-top: 8px; }
-  #qrcode { display: flex; justify-content: center; background: #fff; padding: 8px; border-radius: 8px; width: fit-content; margin: 0 auto; }
+  #qrcode { display: flex; justify-content: center; background: #fff; padding: 8px; border-radius: 8px; }
   #qrcode img { width: 100px; height: 100px; }
 
   .player-list-header { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; }
@@ -119,19 +102,25 @@
   .player-row .num { width: 24px; height: 24px; border-radius: 50%; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.7); flex-shrink: 0; }
 
   .audio-toggle { background: transparent; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; flex-shrink: 0; }
-  
   .reorder-btns { display: flex; gap: 4px; flex-shrink: 0; }
-  .reorder-btns button { width: 32px; height: 32px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); border-radius: 8px; color: #fff; font-size: 14px; cursor: pointer; touch-action: manipulation; }
+  .reorder-btns button { width: 32px; height: 32px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); border-radius: 8px; color: #fff; font-size: 14px; cursor: pointer; }
   .reorder-btns button:disabled { opacity: 0.25; }
   .reorder-btns button.kick { color: #f87171; font-size: 16px; }
 
   .inline-add-row { display: flex; gap: 8px; align-items: stretch; margin-bottom: 6px; }
-  .inline-add-row input[type="text"] { flex: 1; padding: 10px 14px; font-size: 14px; text-align: left; letter-spacing: normal; text-transform: none; border-radius: 10px; }
-  .inline-add-row button { flex: 0 0 44px; width: 44px; border: none; border-radius: 10px; background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%); color: #fff; font-size: 20px; font-weight: 700; cursor: pointer; touch-action: manipulation; }
+  .inline-add-row input[type="text"] { flex: 1; padding: 10px 14px; font-size: 14px; text-align: left; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: #fff; border-radius: 10px; outline: none; }
+  .inline-add-row button { flex: 0 0 44px; width: 44px; border: none; border-radius: 10px; background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%); color: #fff; font-size: 20px; font-weight: 700; cursor: pointer; }
+
+  .lobby-action-row { display: flex; gap: 8px; margin-bottom: 4px; width: 100%; }
+  .btn-primary, .btn-secondary, .btn-next, .btn-ghost { width: 100%; border: none; border-radius: 16px; font-family: inherit; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: transform 0.1s, box-shadow 0.2s; color: #fff; touch-action: manipulation; }
+  .btn-primary { padding: 18px; font-size: 15px; background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%); box-shadow: 0 6px 24px rgba(167, 139, 250, 0.45); }
+  .btn-secondary { padding: 14px; font-size: 13px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); }
+  .btn-ghost { padding: 12px; font-size: 12px; background: transparent; border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.7); }
+  .btn-primary:active, .btn-secondary:active, .btn-next:active { transform: scale(0.97); }
 
   .current-banner { text-align: center; padding: 8px 0 4px; }
   .current-banner .lbl { font-size: 10px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 4px; }
-  .current-banner .player-name-big { font-size: 30px; font-weight: 700; background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .current-banner .player-name-big { font-size: 30px; font-weight: 700; background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
   .timer-area { flex: 1 1 auto; display: flex; align-items: center; justify-content: center; min-height: 0; }
   .timer-container { position: relative; width: min(65vw, 240px); aspect-ratio: 1; display: flex; align-items: center; justify-content: center; }
@@ -142,25 +131,25 @@
 
   .player-pills { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; padding: 0 4px; margin-bottom: 4px; }
   .player-pill { padding: 6px 12px; border-radius: 100px; font-size: 12px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); }
-  .player-pill.current { background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%); color: #fff; border-color: transparent; font-weight: 600; }
+  .player-pill.current { background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%); color: #fff; font-weight: 600; }
 
   .btn-next { flex: 0 0 auto; padding: 32px; font-size: 26px; background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%); box-shadow: 0 8px 32px rgba(167, 139, 250, 0.45); min-height: 120px; border-radius: 24px; margin-top: 8px; }
   .waiting-banner { flex: 0 0 auto; padding: 32px; text-align: center; background: rgba(255,255,255,0.04); border: 2px dashed rgba(255,255,255,0.12); border-radius: 24px; color: rgba(255,255,255,0.6); font-size: 16px; letter-spacing: 1px; min-height: 120px; display: flex; align-items: center; justify-content: center; margin-top: 8px; }
+  .btn-exit-top:disabled, .btn-primary:disabled { opacity: 0.4; box-shadow: none; cursor: not-allowed; }
 
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
-  .time-text.finished { animation: pulse 0.8s ease-in-out infinite; background: linear-gradient(135deg, #f87171 0%, #fbbf24 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .time-text.finished { animation: pulse 0.8s ease-in-out infinite; background: linear-gradient(135deg, #f87171 0%, #fbbf24 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
   #statusBar { position: fixed; top: env(safe-area-inset-top, 8px); left: 50%; transform: translateX(-50%); background: rgba(220,38,38,0.95); color: #fff; padding: 8px 16px; border-radius: 100px; font-size: 13px; z-index: 100; display: none; max-width: 90vw; text-align: center; }
   #statusBar.show { display: block; }
   #statusBar.info { background: rgba(96,165,250,0.95); }
-  #statusBar.success { background: rgba(34,197,94,0.95); }
 
-  #connectionDot { position: fixed; top: env(safe-area-inset-top, 22px); left: 16px; width: 10px; height: 10px; border-radius: 50%; background: #ef4444; z-index: 99; transition: background 0.3s; box-shadow: 0 0 6px currentColor; }
+  #connectionDot { position: fixed; top: env(safe-area-inset-top, 22px); left: 16px; width: 10px; height: 10px; border-radius: 50%; background: #ef4444; z-index: 99; box-shadow: 0 0 6px currentColor; }
   #connectionDot.connected { background: #22c55e; }
   #connectionDot.connecting { background: #fbbf24; }
 
-  #versionTag { position: fixed; top: env(safe-area-inset-top, 20px); left: 34px; font-size: 10px; letter-spacing: 0.5px; color: rgba(255,255,255,0.3); z-index: 50; }
-  #authorTag { position: fixed; bottom: env(safe-area-inset-bottom, 8px); right: 12px; font-size: 10px; letter-spacing: 0.5px; color: rgba(255,255,255,0.25); z-index: 50; pointer-events: none; }
+  #versionTag { position: fixed; top: env(safe-area-inset-top, 20px); left: 34px; font-size: 10px; color: rgba(255,255,255,0.3); z-index: 50; }
+  #authorTag { position: fixed; bottom: env(safe-area-inset-bottom, 8px); right: 12px; font-size: 10px; color: rgba(255,255,255,0.25); z-index: 50; pointer-events: none; }
 </style>
 </head>
 <body>
@@ -170,12 +159,12 @@
 <div id="versionTag"></div>
 <div id="authorTag">by Sascha Urban</div>
 
-<!-- Sound-Einstellungen Modal -->
-<div id="soundModal" class="modal-overlay">
+<!-- Sound Einstellungen Modal -->
+<div id="modalSound" class="modal-overlay">
   <div class="modal-content">
-    <div class="modal-title">Sound-Optionen</div>
+    <div class="modal-title">Sound-Einstellungen</div>
     <div class="setting-row">
-      <span>Halbzeit-Hinweis</span>
+      <span>Halbzeit (>2 Min)</span>
       <select id="soundHalftime">
         <option value="voice">Stimme</option>
         <option value="tone">Ton</option>
@@ -183,37 +172,43 @@
       </select>
     </div>
     <div class="setting-row">
-      <span>30 Sekunden übrig</span>
-      <select id="soundThirty">
+      <span>30 Sekunden</span>
+      <select id="sound30s">
         <option value="voice">Stimme</option>
         <option value="tone">Ton</option>
         <option value="none">Aus</option>
       </select>
     </div>
     <div class="setting-row">
-      <span>Letzte 10 Sekunden</span>
-      <select id="soundTen">
+      <span>10 Sekunden</span>
+      <select id="sound10s">
         <option value="voice">Stimme</option>
         <option value="tone">Ton</option>
         <option value="none">Aus</option>
       </select>
     </div>
     <div class="setting-row">
-      <span>Countdown-Ticken (10s)</span>
-      <input type="checkbox" id="soundTicks" checked>
+      <span>Countdown (Ticks)</span>
+      <input type="checkbox" id="soundCountdown" checked>
     </div>
     <div class="setting-row">
-      <span>Schlusston bei Ablauf</span>
+      <span>Spielerwechsel</span>
+      <select id="soundSwitch">
+        <option value="voice">Name sagen</option>
+        <option value="tone">Ton</option>
+        <option value="none">Aus</option>
+      </select>
+    </div>
+    <div class="setting-row">
+      <span>Zeit abgelaufen</span>
       <input type="checkbox" id="soundFinished" checked>
     </div>
-    <div style="height: 14px"></div>
-    <button class="btn-primary" id="btnCloseSoundModal" type="button" style="padding: 12px;">Speichern</button>
+    <button class="btn-primary" id="btnCloseSound" type="button" style="padding:12px; margin-top:14px; font-size:13px; border-radius:12px;">Speichern</button>
   </div>
 </div>
 
 <div id="screen-welcome" class="screen active">
   <div class="title">Spieltimer</div>
-  <div class="subtitle">Lokales P2P-Spiel</div>
   <div style="height: 12px"></div>
   <input type="text" id="nameInput" placeholder="Dein Name" maxlength="20" autocomplete="off">
   <button class="btn-primary" id="btnCreate" type="button">Raum erstellen</button>
@@ -223,21 +218,18 @@
 </div>
 
 <div id="screen-lobby" class="screen">
-  <button class="btn-exit-top" id="btnLeaveLobbyTop" type="button" title="Raum verlassen">Exit</button>
+  <button class="btn-exit-top" id="btnLeaveLobbyTop" type="button">Exit</button>
   <div class="title" style="margin-top: 14px;">Spieltimer</div>
   
   <div class="room-code-display">
     <div class="code-row">
       <span style="font-size:10px; opacity:0.5; text-transform:uppercase; letter-spacing:1px;">Code:</span>
       <span class="room-code-value" id="lobbyRoomCode">----</span>
-      <button class="btn-ghost" id="btnToggleQR" type="button" style="width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; border-color: rgba(255,255,255,0.3);" title="QR-Code anzeigen">
+      <button class="btn-ghost" id="btnToggleQR" type="button" style="width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; border-color: rgba(255,255,255,0.3);">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
       </button>
     </div>
-    <div id="qrcodeWrapper">
-      <div id="qrcode"></div>
-      <div style="font-size:10px; opacity:0.5; margin-top:6px;">Zum Beitreten scannen</div>
-    </div>
+    <div id="qrcodeWrapper"><div id="qrcode"></div></div>
   </div>
   
   <div class="player-list-header">
@@ -254,14 +246,13 @@
 
   <div class="player-list" id="playerList"></div>
 
-  <div id="hostControls" style="display:none; margin-top: auto; flex-direction: column; gap: 8px;">
-    <div style="display: flex; gap: 8px; width: 100%;">
-      <button class="btn-secondary" id="btnOpenTimeInput" type="button" style="flex: 1; padding: 14px 10px; font-size: 13px;">Zeit einstellen</button>
-      <button class="btn-secondary" id="btnOpenSoundModal" type="button" style="flex: 1; padding: 14px 10px; font-size: 13px;">Sounds</button>
+  <div id="hostControls" style="display:none; margin-top: auto;">
+    <div class="lobby-action-row">
+      <button class="btn-secondary" id="btnOpenTime" type="button">Zeit: <span id="lobbyTimeLabel">5:00</span></button>
+      <button class="btn-secondary" id="btnOpenSound" type="button">Sounds ⚙️</button>
     </div>
     <button class="btn-primary" id="btnStartGame" type="button">Spiel starten</button>
   </div>
-
   <div id="joinerWait" style="display:none; margin-top: auto;">
     <div style="text-align:center; padding:18px; color:rgba(255,255,255,0.6);" id="joinerWaitText">Warte auf Spielstart…</div>
   </div>
@@ -291,12 +282,10 @@
   <div class="waiting-banner" id="waitingBanner" style="display:none">Warte auf <span id="waitingForName" style="margin-left:5px; font-weight:bold; color:#a78bfa"></span>…</div>
   
   <button class="btn-secondary" id="btnHostNext" type="button" style="display:none; margin-top:8px;">Nächster: ?</button>
-
   <div style="display: flex; gap: 8px; margin-top: 4px;" id="hostGameButtons">
     <button class="btn-ghost" id="btnHostEndGame" type="button" style="display:none; flex: 1;">Spiel beenden</button>
     <button class="btn-secondary" id="btnHostToLobby" type="button" style="display:none; flex: 2;">Zur Lobby</button>
   </div>
-  
   <div style="display: flex; gap: 8px; margin-top: 4px;" id="clientGameButtons">
     <button class="btn-ghost" id="btnLeaveGame" type="button" style="display:none; flex: 1;">Spiel verlassen</button>
   </div>
@@ -315,13 +304,7 @@ const app = {
   myName: '', myPeerId: null, isHost: false, roomCode: null,
   players: [], duration: 300, currentIndex: 0, endTimestamp: null,
   isRunning: false, isFinished: false, gameStarted: false,
-  soundSettings: {
-    halftime: 'voice',
-    thirtySec: 'voice',
-    tenSec: 'voice',
-    ticks: true,
-    finished: true
-  }
+  soundSettings: { halftime: 'voice', thirtySec: 'voice', tenSec: 'voice', countdown: true, switch: 'voice', finished: true }
 };
 
 let peer = null;
@@ -335,7 +318,7 @@ let alarmTriggered = false;
 let halftimeTriggered = false;
 let thirtySecTriggered = false;
 let lastCountdownSecond = null;
-let durationBroadcastTimer = null;
+let lastTriggeredIndex = null;
 let hostRepublishTimer = null;
 let watchdogTimer = null;
 let lastMessageAt = Date.now();
@@ -376,10 +359,11 @@ const el = {
   btnToggleQR: document.getElementById('btnToggleQR'),
   btnToggleAddLocal: document.getElementById('btnToggleAddLocal'),
   addLocalPlayerBox: document.getElementById('addLocalPlayerBox'),
-  btnOpenTimeInput: document.getElementById('btnOpenTimeInput'),
-  btnOpenSoundModal: document.getElementById('btnOpenSoundModal'),
-  soundModal: document.getElementById('soundModal'),
-  btnCloseSoundModal: document.getElementById('btnCloseSoundModal')
+  btnOpenTime: document.getElementById('btnOpenTime'),
+  btnOpenSound: document.getElementById('btnOpenSound'),
+  lobbyTimeLabel: document.getElementById('lobbyTimeLabel'),
+  modalSound: document.getElementById('modalSound'),
+  btnCloseSound: document.getElementById('btnCloseSound')
 };
 
 el.progressRingFill.style.strokeDasharray = CIRCUMFERENCE;
@@ -387,37 +371,7 @@ document.getElementById('versionTag').textContent = 'v' + APP_VERSION;
 
 const urlParams = new URLSearchParams(window.location.search);
 const urlCode = urlParams.get('code');
-if (urlCode && urlCode.length === 4) {
-    el.codeInput.value = urlCode.toUpperCase();
-}
-
-// Sound-Einstellungen aus localStorage laden/speichern
-function loadSoundSettings() {
-  try {
-    const saved = localStorage.getItem('spieltimer.sounds');
-    if (saved) {
-      app.soundSettings = { ...app.soundSettings, ...JSON.parse(saved) };
-    }
-  } catch(e){}
-  
-  document.getElementById('soundHalftime').value = app.soundSettings.halftime;
-  document.getElementById('soundThirty').value = app.soundSettings.thirtySec;
-  document.getElementById('soundTen').value = app.soundSettings.tenSec;
-  document.getElementById('soundTicks').checked = app.soundSettings.ticks;
-  document.getElementById('soundFinished').checked = app.soundSettings.finished;
-}
-
-function saveSoundSettings() {
-  app.soundSettings.halftime = document.getElementById('soundHalftime').value;
-  app.soundSettings.thirtySec = document.getElementById('soundThirty').value;
-  app.soundSettings.tenSec = document.getElementById('soundTen').value;
-  app.soundSettings.ticks = document.getElementById('soundTicks').checked;
-  app.soundSettings.finished = document.getElementById('soundFinished').checked;
-  
-  try {
-    localStorage.setItem('spieltimer.sounds', JSON.stringify(app.soundSettings));
-  } catch(e){}
-}
+if (urlCode && urlCode.length === 4) { el.codeInput.value = urlCode.toUpperCase(); }
 
 function setScreen(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -428,7 +382,6 @@ function showStatus(text, kind = 'error', durationMs = 4000) {
   el.statusBar.textContent = text;
   let cls = 'show';
   if (kind === 'info') cls += ' info';
-  else if (kind === 'success') cls += ' success';
   el.statusBar.className = cls;
   if (durationMs > 0) { setTimeout(() => { if(el.statusBar.textContent === text) el.statusBar.className = ''; }, durationMs); }
 }
@@ -441,7 +394,7 @@ function formatTime(ms) {
 }
 function formatDurationLabel(seconds) {
   const m = Math.floor(seconds / 60); const s = seconds % 60;
-  return s === 0 ? `${m}:00 min` : `${m}:${String(s).padStart(2,'0')} min`;
+  return s === 0 ? `${m}:00` : `${m}:${String(s).padStart(2,'0')}`;
 }
 function generateRoomCode() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let code = '';
@@ -466,13 +419,11 @@ function speak(text) {
     return true;
   } catch (e) { return false; }
 }
-
 function ensureAudio() {
   if (!audioCtx) { try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} }
   if (audioCtx && audioCtx.state === 'suspended') { audioCtx.resume().catch(() => {}); }
   ensureSpeech();
 }
-
 function playTones(freqs, noteDur = 0.2, gap = 0.06) {
   ensureAudio(); if (!audioCtx) return;
   const now = audioCtx.currentTime;
@@ -486,132 +437,79 @@ function playTones(freqs, noteDur = 0.2, gap = 0.06) {
   });
 }
 
-function alertHalftime() {
-  if (app.soundSettings.halftime === 'voice') { speak('Halbzeit'); }
-  else if (app.soundSettings.halftime === 'tone') { playTones([523, 659], 0.2, 0.06); }
-  vibrate([120]);
-}
-function alertThirtySeconds() {
-  if (app.soundSettings.thirtySec === 'voice') { speak('Noch 30 Sekunden'); }
-  else if (app.soundSettings.thirtySec === 'tone') { playTones([784], 0.22); }
-  vibrate([150]);
-}
-function alertCountdownTick(secondsLeft) {
-  const freq = 420 + (10 - secondsLeft) * 44; 
-  if (app.soundSettings.ticks) { playTones([freq], 0.12); }
-  vibrate([60]);
-  if (secondsLeft === 10 && app.soundSettings.tenSec === 'voice') speak('Noch 10 Sekunden');
-  else if (secondsLeft <= 10 && app.soundSettings.tenSec === 'tone' && secondsLeft > 0) { playTones([600], 0.08); }
-}
-function alertFinished() { if (app.soundSettings.finished) { playTones([880, 880, 880], 0.3, 0.1); } }
-function resetTurnAlerts() { alarmTriggered = false; halftimeTriggered = false; thirtySecTriggered = false; lastCountdownSecond = null; }
-function vibrate(pattern = [200, 100, 200, 100, 200]) { if (navigator.vibrate) navigator.vibrate(pattern); }
-
 function audioAllowed() {
     const me = app.players.find(p => p.peerId === app.myPeerId);
     return me ? me.audioEnabled : false;
 }
 
+// Erweiterte Sound-Trigger Logik basierend auf den Synchronisierten Host-Settings
+function alertHalftime() {
+  if (app.soundSettings.halftime === 'voice') speak('Halbzeit');
+  else if (app.soundSettings.halftime === 'tone') playTones([523, 659], 0.15);
+}
+function alertThirtySeconds() {
+  if (app.soundSettings.thirtySec === 'voice') speak('Noch 30 Sekunden');
+  else if (app.soundSettings.thirtySec === 'tone') playTones([698], 0.2);
+}
+function alertCountdownTick(secondsLeft) {
+  if (app.soundSettings.countdown) {
+    const freq = 420 + (10 - secondsLeft) * 44; 
+    vibrate([40]); playTones([freq], 0.08);
+  }
+  if (secondsLeft === 10 && app.soundSettings.tenSec === 'voice') speak('Noch 10 Sekunden');
+  else if (secondsLeft === 10 && app.soundSettings.tenSec === 'tone') playTones([880, 880], 0.1);
+}
+function alertFinished() { if (app.soundSettings.finished) { playTones([880, 880, 440], 0.25, 0.08); } }
+
+function alertPlayerSwitch() {
+  if (!app.gameStarted || app.players.length === 0) return;
+  const cur = app.players[app.currentIndex];
+  if (!cur) return;
+  if (app.soundSettings.switch === 'voice') {
+    speak(cur.name + ' ist dran');
+  } else if (app.soundSettings.switch === 'tone') {
+    playTones([554, 659], 0.08, 0.03);
+  }
+}
+
+function resetTurnAlerts() { alarmTriggered = false; halftimeTriggered = false; thirtySecTriggered = false; lastCountdownSecond = null; }
+function vibrate(pattern = [200, 100, 200]) { if (navigator.vibrate) navigator.vibrate(pattern); }
+
 async function requestWakeLock() { 
   if (!app.roomCode) return; 
-  try { 
-    if ('wakeLock' in navigator && !wakeLock) { 
-      wakeLock = await navigator.wakeLock.request('screen'); 
-      wakeLock.addEventListener('release', () => { wakeLock = null; });
-    } 
-  } catch (e) {} 
+  try { if ('wakeLock' in navigator && !wakeLock) { wakeLock = await navigator.wakeLock.request('screen'); } } catch (e) {} 
 }
-async function releaseWakeLock() { try { if (wakeLock) { await wakeLock.release(); wakeLock = null; } } catch (e) {} }
-
-document.addEventListener('click', () => { ensureAudio(); requestWakeLock(); });
-document.addEventListener('touchend', () => { ensureAudio(); requestWakeLock(); });
 
 function checkAndReconnectIfNeeded() {
   if (!app.roomCode || isExplicitLeave) return;
   requestWakeLock();
-  
-  if (app.isHost) {
-      if (peer && peer.disconnected && !peer.destroyed) {
-          setConnState('connecting');
-          peer.reconnect();
-      }
-  } else {
-      if (!clientConnToHost || !clientConnToHost.open) {
-          showStatus('Verbindung wiederherstellen...', 'info', 2000);
-          reconnectClientToHost();
-      }
-  }
+  if (app.isHost) { if (peer && peer.disconnected && !peer.destroyed) { setConnState('connecting'); peer.reconnect(); } } 
+  else { if (!clientConnToHost || !clientConnToHost.open) reconnectClientToHost(); }
 }
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') checkAndReconnectIfNeeded(); });
-window.addEventListener('pageshow', () => { checkAndReconnectIfNeeded(); });
-window.addEventListener('online', () => { checkAndReconnectIfNeeded(); });
-
-function startWatchdog() {
-  stopWatchdog();
-  watchdogTimer = setInterval(() => {
-    if (!app.roomCode || isExplicitLeave || app.isHost) return;
-    if ((Date.now() - lastMessageAt) > WATCHDOG_TIMEOUT_MS) {
-      showStatus('Verbindung scheint eingefroren – Reconnect...', 'info', 2000);
-      checkAndReconnectIfNeeded();
-    }
-  }, 5000);
-}
-function stopWatchdog() { if (watchdogTimer) { clearInterval(watchdogTimer); watchdogTimer = null; } }
 
 function reconnectClientToHost() {
     if (!app.roomCode || isExplicitLeave || app.isHost) return;
     setConnState('connecting');
     if (clientConnToHost) { clientConnToHost.close(); }
-    
-    if (!peer || peer.destroyed) {
-        initClientPeer(() => establishConnectionToHost(app.roomCode, true));
-    } else if (peer.disconnected) {
-        peer.reconnect();
-        setTimeout(() => establishConnectionToHost(app.roomCode, true), 1000);
-    } else {
-        establishConnectionToHost(app.roomCode, true);
-    }
+    if (!peer || peer.destroyed) { initClientPeer(() => establishConnectionToHost(app.roomCode)); } 
+    else if (peer.disconnected) { peer.reconnect(); setTimeout(() => establishConnectionToHost(app.roomCode), 1000); } 
+    else { establishConnectionToHost(app.roomCode); }
 }
 
-function establishConnectionToHost(code, isReconnect = false) {
+function establishConnectionToHost(code) {
     const targetId = `${TOPIC_PREFIX}-${code}`;
     clientConnToHost = peer.connect(targetId, { reliable: true });
-    
-    clientConnToHost.on('open', () => {
-        setConnState('connected');
-        lastMessageAt = Date.now();
-        startWatchdog();
-        publishAction({ type: 'join', name: app.myName });
-    });
-    
-    clientConnToHost.on('data', (data) => {
-        lastMessageAt = Date.now();
-        if (data.type === 'state') handleStateMessage(data.state);
-    });
-    
-    clientConnToHost.on('close', () => {
-        setConnState('');
-        stopWatchdog();
-        if (!isExplicitLeave && app.roomCode) {
-            setTimeout(() => checkAndReconnectIfNeeded(), 2000);
-        }
-    });
+    clientConnToHost.on('open', () => { setConnState('connected'); lastMessageAt = Date.now(); publishAction({ type: 'join', name: app.myName }); });
+    clientConnToHost.on('data', (data) => { lastMessageAt = Date.now(); if (data.type === 'state') handleStateMessage(data.state); });
+    clientConnToHost.on('close', () => { setConnState(''); if (!isExplicitLeave && app.roomCode) setTimeout(() => checkAndReconnectIfNeeded(), 2000); });
 }
 
 function initClientPeer(onReady) {
     if (peer) peer.destroy();
     peer = new Peer({ debug: 0 });
-    
-    peer.on('open', (id) => {
-        app.myPeerId = id;
-        if (onReady) onReady();
-    });
-    
+    peer.on('open', (id) => { app.myPeerId = id; if (onReady) onReady(); });
     peer.on('disconnected', () => { setConnState(''); if (!isExplicitLeave) peer.reconnect(); });
-    peer.on('error', (err) => { 
-        setConnState(''); 
-        if(isInJoinPhase) showStatus('Fehler beim Verbinden mit Server.'); 
-    });
 }
 
 function publishState() {
@@ -619,22 +517,15 @@ function publishState() {
   const snapshot = {
     players: app.players, duration: app.duration, currentIndex: app.currentIndex,
     endTimestamp: app.endTimestamp, isRunning: app.isRunning, isFinished: app.isFinished,
-    gameStarted: app.gameStarted, hostTime: Date.now()
+    gameStarted: app.gameStarted, hostTime: Date.now(), soundSettings: app.soundSettings
   };
-  hostConnections.forEach(conn => {
-      if (conn.open) conn.send({ type: 'state', state: snapshot });
-  });
+  hostConnections.forEach(conn => { if (conn.open) conn.send({ type: 'state', state: snapshot }); });
 }
-
-function startHostRepublish() { stopHostRepublish(); hostRepublishTimer = setInterval(() => publishState(), STATE_REPUBLISH_MS); }
-function stopHostRepublish() { if (hostRepublishTimer) { clearInterval(hostRepublishTimer); hostRepublishTimer = null; } }
 
 function publishAction(action) {
   if (app.isHost) return;
   const payload = { ...action, from: app.myPeerId, ts: Date.now() };
-  if (clientConnToHost && clientConnToHost.open) {
-      clientConnToHost.send(payload);
-  }
+  if (clientConnToHost && clientConnToHost.open) clientConnToHost.send(payload);
 }
 
 function handleActionMessage(action) {
@@ -664,110 +555,63 @@ function removePlayer(peerId) {
 }
 
 function handleStateMessage(snapshot) {
-  if (snapshot.closed) { if (isInJoinPhase) return; showStatus('Der Raum wurde vom Host geschlossen.'); leaveRoom(); return; }
+  if (snapshot.closed) { leaveRoom(); return; }
   const prevStarted = app.gameStarted; const prevEndTs = app.endTimestamp;
   app.players = snapshot.players || []; app.duration = snapshot.duration || 300;
   app.currentIndex = snapshot.currentIndex || 0; app.endTimestamp = snapshot.endTimestamp || null;
   app.isRunning = snapshot.isRunning || false; app.isFinished = snapshot.isFinished || false;
   app.gameStarted = snapshot.gameStarted || false;
+  if (snapshot.soundSettings) app.soundSettings = snapshot.soundSettings;
 
   if (snapshot.hostTime) { timeOffset = snapshot.hostTime - Date.now(); }
   if (app.endTimestamp !== prevEndTs) resetTurnAlerts();
 
   const meInList = app.players.find(p => p.peerId === app.myPeerId);
-  if (isInJoinPhase) {
-    if (meInList) {
-      isInJoinPhase = false; if (joinAckTimer) { clearTimeout(joinAckTimer); joinAckTimer = null; }
-      hideStatus(); if (app.gameStarted) { ensureAudio(); requestWakeLock(); setScreen('game'); } else { setScreen('lobby'); }
-      refreshUI();
-    }
-    return;
+  if (isInJoinPhase && meInList) {
+    isInJoinPhase = false; if (joinAckTimer) clearTimeout(joinAckTimer);
+    hideStatus(); if (app.gameStarted) { ensureAudio(); setScreen('game'); } else { setScreen('lobby'); }
+    refreshUI(); return;
   }
-  
-  if (!meInList) { return; } 
-  
-  if (app.gameStarted && !prevStarted) { ensureAudio(); requestWakeLock(); setScreen('game'); }
+  if (!meInList) return; 
+  if (app.gameStarted && !prevStarted) { ensureAudio(); setScreen('game'); }
   else if (!app.gameStarted && prevStarted) { setScreen('lobby'); }
   refreshUI();
-}
-
-function generateQRCode() {
-    el.qrcode.innerHTML = '';
-    const joinUrl = window.location.origin + window.location.pathname.split('?')[0] + '?code=' + app.roomCode;
-    new QRCode(el.qrcode, {
-        text: joinUrl,
-        width: 100,
-        height: 100,
-        colorDark : "#000000",
-        colorLight : "#ffffff",
-        correctLevel : QRCode.CorrectLevel.L
-    });
 }
 
 function createRoom() {
   app.isHost = true; app.roomCode = generateRoomCode(); app.myName = el.nameInput.value.trim();
   showStatus('Erstelle P2P-Raum...', 'info', 0);
-  
   if (peer) peer.destroy();
   const hostId = `${TOPIC_PREFIX}-${app.roomCode}`;
   app.myPeerId = `host-${generateClientId()}`;
   app.players = [{ peerId: app.myPeerId, name: app.myName, audioEnabled: true }];
   
-  el.qrcodeWrapper.style.display = 'none';
-  el.addLocalPlayerBox.style.display = 'none';
-
   generateQRCode();
-
   peer = new Peer(hostId, { debug: 0 });
   setConnState('connecting');
   
-  peer.on('open', (id) => {
-      hideStatus(); setConnState('connected');
-      publishState(); startHostRepublish(); setScreen('lobby'); renderLobby();
-  });
-  
-  peer.on('connection', (conn) => {
-      hostConnections.push(conn);
-      conn.on('data', (data) => {
-          handleActionMessage(data); 
-      });
-      conn.on('close', () => {
-          hostConnections = hostConnections.filter(c => c !== conn);
-      });
-  });
-  
-  peer.on('error', (err) => {
-      if (err.type === 'unavailable-id') {
-          showStatus('Code wird gerade verwendet. Bitte nochmal versuchen.');
-          setConnState('');
-      } else {
-          setConnState(''); showStatus('Fehler: ' + err.type);
-      }
-  });
-  
+  peer.on('open', () => { hideStatus(); setConnState('connected'); publishState(); setInterval(publishState, STATE_REPUBLISH_MS); setScreen('lobby'); renderLobby(); });
+  peer.on('connection', (conn) => { hostConnections.push(conn); conn.on('data', handleActionMessage); conn.on('close', () => { hostConnections = hostConnections.filter(c => c !== conn); }); });
   peer.on('disconnected', () => { setConnState(''); if (!isExplicitLeave) peer.reconnect(); });
 }
 
+function generateQRCode() {
+    el.qrcode.innerHTML = '';
+    const joinUrl = window.location.origin + window.location.pathname.split('?')[0] + '?code=' + app.roomCode;
+    new QRCode(el.qrcode, { text: joinUrl, width: 100, height: 100, colorDark : "#000000", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.L });
+}
+
 function joinRoom(code) {
-  app.isHost = false; app.roomCode = code; isInJoinPhase = true;
-  app.myName = el.nameInput.value.trim();
-  
-  el.btnToggleQR.style.display = 'none';
-  el.qrcodeWrapper.style.display = 'none';
-  
-  showStatus('Verbinde per WebRTC...', 'info', 0);
+  app.isHost = false; app.roomCode = code; isInJoinPhase = true; app.myName = el.nameInput.value.trim();
   setConnState('connecting');
-  
   initClientPeer(() => {
-      establishConnectionToHost(code, false);
-      joinAckTimer = setTimeout(() => { 
-          if (isInJoinPhase) { showStatus('Raum nicht gefunden oder offline.'); leaveRoom(); } 
-      }, 8000);
+      establishConnectionToHost(code);
+      joinAckTimer = setTimeout(() => { if (isInJoinPhase) { showStatus('Raum offline.'); leaveRoom(); } }, 8000);
   });
 }
 
 function hostStartGame() {
-  if (app.players.length < 1) return; ensureAudio(); requestWakeLock();
+  if (app.players.length < 1) return; ensureAudio();
   app.gameStarted = true; app.currentIndex = 0; app.endTimestamp = Date.now() + app.duration * 1000;
   app.isRunning = true; app.isFinished = false; resetTurnAlerts();
   publishState(); setScreen('game'); renderGame();
@@ -791,70 +635,14 @@ function hostMovePlayer(peerId, direction) {
   publishState(); renderLobby();
 }
 
-function hostKickPlayer(peerId) { if (peerId !== app.myPeerId) removePlayer(peerId); }
-
-function hostAddLocalPlayer() {
-  const name = el.localPlayerInput.value.trim();
-  if (!name) { showStatus('Bitte einen Namen eingeben.'); el.localPlayerInput.focus(); return; }
-  if (app.gameStarted) return;
-  const localId = 'local-' + generateClientId();
-  app.players.push({ peerId: localId, name: name, isLocal: true });
-  el.localPlayerInput.value = '';
-  el.addLocalPlayerBox.style.display = 'none';
-  publishState(); renderLobby();
-}
-
 function leaveRoom() {
-  isExplicitLeave = true;
-  releaseWakeLock(); stopHostRepublish(); stopWatchdog(); if (joinAckTimer) { clearTimeout(joinAckTimer); joinAckTimer = null; }
-  isInJoinPhase = false;
-  
-  if (app.isHost) {
-      const snapshot = { closed: true };
-      hostConnections.forEach(c => { if(c.open) c.send({ type: 'state', state: snapshot }); c.close(); });
-  } else {
-      if (clientConnToHost && clientConnToHost.open) { 
-          clientConnToHost.send({ type: 'leave', from: app.myPeerId, ts: Date.now() }); 
-          clientConnToHost.close(); 
-      }
-  }
-  
-  if (peer) { peer.destroy(); peer = null; }
-  hostConnections = []; clientConnToHost = null;
+  isExplicitLeave = true; if (peer) peer.destroy();
   Object.assign(app, { isHost: false, myPeerId: null, roomCode: null, players: [], currentIndex: 0, endTimestamp: null, isRunning: false, isFinished: false, gameStarted: false });
   setConnState(''); setScreen('welcome');
-  
-  window.history.replaceState({}, document.title, window.location.pathname);
-  el.codeInput.value = '';
 }
 
 function promptLeaveRoom() {
-    if (app.isHost) {
-        if (confirm("Möchtest du den Raum wirklich beenden?\n\nDadurch wird das Spiel abgebrochen und der Raum für alle Mitspieler geschlossen.")) {
-            leaveRoom();
-        }
-    } else {
-        if (confirm("Möchtest du den Raum wirklich verlassen?")) {
-            leaveRoom();
-        }
-    }
-}
-
-function promptTimeInput() {
-    if (!app.isHost) return;
-    const currentMin = app.duration / 60;
-    const input = prompt("Zeit in Minuten eingeben (z.B. 5 oder 1.5):", currentMin.toString());
-    if (input !== null) {
-        let parsed = parseFloat(input.replace(',', '.'));
-        if (!isNaN(parsed) && parsed > 0) {
-            let totalSeconds = Math.round(parsed * 60);
-            totalSeconds = Math.max(10, Math.min(totalSeconds, 3600)); 
-            app.duration = totalSeconds;
-            clearTimeout(durationBroadcastTimer); 
-            durationBroadcastTimer = setTimeout(() => publishState(), 200);
-            showStatus("Zeit geändert auf: " + formatDurationLabel(totalSeconds), "success", 2000);
-        }
-    }
+    if (confirm(app.isHost ? "Möchtest du den Raum beenden? Dadurch fliegen alle Spieler raus." : "Möchtest du den Raum verlassen?")) leaveRoom();
 }
 
 function tick() {
@@ -866,172 +654,112 @@ function tick() {
     const progress = Math.max(0, Math.min(1, remaining / totalMs));
     el.progressRingFill.style.strokeDashoffset = CIRCUMFERENCE * (1 - progress);
 
-    if (!halftimeTriggered && totalMs > 120000 && remaining > 0 && remaining <= totalMs / 2) {
-      halftimeTriggered = true; if(audioAllowed()) alertHalftime();
-    }
-    if (!thirtySecTriggered && totalMs > 30000 && remaining > 0 && remaining <= 30000) {
-      thirtySecTriggered = true; if(audioAllowed()) alertThirtySeconds();
-    }
+    if (!halftimeTriggered && totalMs > 120000 && remaining <= totalMs / 2) { halftimeTriggered = true; if(audioAllowed()) alertHalftime(); }
+    if (!thirtySecTriggered && totalMs > 30000 && remaining <= 30000) { thirtySecTriggered = true; if(audioAllowed()) alertThirtySeconds(); }
     if (totalMs > 10000 && remaining > 0) {
       const secondsLeft = Math.ceil(remaining / 1000);
-      if (secondsLeft <= 10 && secondsLeft !== lastCountdownSecond) {
-        lastCountdownSecond = secondsLeft; if(audioAllowed()) alertCountdownTick(secondsLeft);
-      }
+      if (secondsLeft <= 10 && secondsLeft !== lastCountdownSecond) { lastCountdownSecond = secondsLeft; if(audioAllowed()) alertCountdownTick(secondsLeft); }
     }
-
-    if (remaining <= 0) {
-      el.gameTimeText.classList.add('finished');
-      if (!alarmTriggered) { 
-        alarmTriggered = true; 
-        if(audioAllowed()) { alertFinished(); vibrate(); }
-        if (app.isHost && app.isRunning) { app.isRunning = false; app.isFinished = true; publishState(); } 
-      }
-    } else { el.gameTimeText.classList.remove('finished'); }
+    if (remaining <= 0 && !alarmTriggered) { alarmTriggered = true; if(audioAllowed()) alertFinished(); if (app.isHost && app.isRunning) { app.isRunning = false; app.isFinished = true; publishState(); } }
   }
   requestAnimationFrame(tick);
 }
 
 function refreshUI() {
+  // Erkennt autonomen Spielerwechsel auf allen gekoppelten Geräten
+  if (app.gameStarted && app.currentIndex !== lastTriggeredIndex) {
+      if(audioAllowed()) alertPlayerSwitch();
+      lastTriggeredIndex = app.currentIndex;
+  }
   if (document.getElementById('screen-lobby').classList.contains('active')) renderLobby();
   else if (document.getElementById('screen-game').classList.contains('active')) renderGame();
 }
 
 function renderLobby() {
   el.lobbyRoomCode.textContent = app.roomCode || '----'; el.playerList.innerHTML = '';
+  el.lobbyTimeLabel.textContent = formatDurationLabel(app.duration);
   app.players.forEach((p, idx) => {
     const row = document.createElement('div'); row.className = 'player-row' + (p.peerId === app.myPeerId ? ' me' : '');
-    
     const num = document.createElement('div'); num.className = 'num'; num.textContent = idx + 1; row.appendChild(num);
-    const name = document.createElement('div'); name.className = 'name'; name.style.flex = '1'; name.style.fontSize = '16px'; name.style.overflow = 'hidden'; name.style.textOverflow = 'ellipsis'; name.style.whiteSpace = 'nowrap'; name.textContent = p.name;
-    
-    if (p.peerId === app.myPeerId) { const tag = document.createElement('span'); tag.className = 'me-tag'; tag.style.color = '#a78bfa'; tag.style.fontSize = '10px'; tag.style.marginLeft = '6px'; tag.textContent = '(du)'; name.appendChild(tag); }
-    if (p.isLocal) { const tag = document.createElement('span'); tag.style.color = 'rgba(255,255,255,0.4)'; tag.style.fontSize = '10px'; tag.style.marginLeft = '6px'; tag.textContent = '(kein Handy)'; name.appendChild(tag); }
+    const name = document.createElement('div'); name.className = 'name'; name.style.flex = '1'; name.style.fontSize = '16px'; name.textContent = p.name;
+    if (p.peerId === app.myPeerId) { const tag = document.createElement('span'); tag.style.color = '#a78bfa'; tag.style.fontSize = '10px'; tag.style.marginLeft = '4px'; tag.textContent = '(du)'; name.appendChild(tag); }
+    if (p.isLocal) { const tag = document.createElement('span'); tag.style.color = 'rgba(255,255,255,0.4)'; tag.style.fontSize = '10px'; tag.style.marginLeft = '4px'; tag.textContent = '(offline)'; name.appendChild(tag); }
     row.appendChild(name);
 
     if (app.isHost) {
       if (!p.isLocal) {
-        const audioBtn = document.createElement('button');
-        audioBtn.className = 'audio-toggle';
-        audioBtn.innerHTML = p.audioEnabled ? '🔊' : '🔇';
-        audioBtn.title = 'Ansage umschalten';
-        audioBtn.onclick = () => {
-          p.audioEnabled = !p.audioEnabled;
-          publishState();
-          renderLobby();
-        };
+        const audioBtn = document.createElement('button'); audioBtn.className = 'audio-toggle'; audioBtn.innerHTML = p.audioEnabled ? '🔊' : '🔇';
+        audioBtn.onclick = () => { p.audioEnabled = !p.audioEnabled; publishState(); renderLobby(); };
         row.appendChild(audioBtn);
       }
-
       const ctrls = document.createElement('div'); ctrls.className = 'reorder-btns';
-      const up = document.createElement('button'); up.type = 'button'; up.innerHTML = '&uarr;'; up.disabled = idx === 0; up.onclick = () => hostMovePlayer(p.peerId, -1);
-      const down = document.createElement('button'); down.type = 'button'; down.innerHTML = '&darr;'; down.disabled = idx === app.players.length - 1; down.onclick = () => hostMovePlayer(p.peerId, 1);
+      const up = document.createElement('button'); up.innerHTML = '&uarr;'; up.disabled = idx === 0; up.onclick = () => hostMovePlayer(p.peerId, -1);
+      const down = document.createElement('button'); down.innerHTML = '&darr;'; down.disabled = idx === app.players.length - 1; down.onclick = () => hostMovePlayer(p.peerId, 1);
       ctrls.appendChild(up); ctrls.appendChild(down);
-      if (p.peerId !== app.myPeerId) { const kick = document.createElement('button'); kick.type = 'button'; kick.className = 'kick'; kick.innerHTML = '&times;'; kick.onclick = () => hostKickPlayer(p.peerId); ctrls.appendChild(kick); }
+      if (p.peerId !== app.myPeerId) { const kick = document.createElement('button'); kick.className = 'kick'; kick.innerHTML = '&times;'; kick.onclick = () => removePlayer(p.peerId); ctrls.appendChild(kick); }
       row.appendChild(ctrls);
     }
     el.playerList.appendChild(row);
   });
-  
-  el.hostControls.style.display = app.isHost ? 'flex' : 'none'; 
-  el.joinerWait.style.display = app.isHost ? 'none' : 'block';
-  el.btnToggleQR.style.display = app.isHost ? 'flex' : 'none';
+  el.hostControls.style.display = app.isHost ? 'flex' : 'none'; el.joinerWait.style.display = app.isHost ? 'none' : 'block';
   el.btnToggleAddLocal.style.display = app.isHost ? 'block' : 'none';
-  
-  if (app.isHost) { 
-      if (app.gameStarted) {
-          el.btnStartGame.textContent = 'Zurück zum Spiel';
-      } else {
-          el.btnStartGame.textContent = 'Spiel starten';
-      }
-      el.btnStartGame.disabled = app.players.length < 1; 
-  } else { 
-      el.joinerWaitText.textContent = `Warte auf Spielstart… (${formatDurationLabel(app.duration)} pro Zug)`; 
-  }
+  if (app.isHost) el.btnStartGame.textContent = app.gameStarted ? 'Zurück zum Spiel' : 'Spiel starten';
 }
 
 function renderGame() {
   const cur = app.players[app.currentIndex]; el.currentPlayerName.textContent = cur ? cur.name : '-'; el.gamePlayerPills.innerHTML = '';
   app.players.forEach((p, idx) => {
-    const pill = document.createElement('div'); pill.className = 'player-pill' + (idx === app.currentIndex ? ' current' : ''); pill.textContent = p.name + (p.isLocal ? ' · kein Handy' : ''); el.gamePlayerPills.appendChild(pill);
+    const pill = document.createElement('div'); pill.className = 'player-pill' + (idx === app.currentIndex ? ' current' : ''); pill.textContent = p.name; el.gamePlayerPills.appendChild(pill);
   });
   const isMyTurn = cur && cur.peerId === app.myPeerId; el.btnNext.style.display = isMyTurn ? 'block' : 'none'; el.waitingBanner.style.display = isMyTurn ? 'none' : 'flex';
-  if (!isMyTurn && cur) { el.waitingForName.textContent = cur.name; }
+  if (!isMyTurn && cur) el.waitingForName.textContent = cur.name;
   
   if (app.isHost) {
     el.btnHostNext.style.display = isMyTurn ? 'none' : 'block';
-    if (app.players.length > 0) {
-        const nextIdx = (app.currentIndex + 1) % app.players.length;
-        el.btnHostNext.textContent = `Nächster: ${app.players[nextIdx].name}`;
-    }
-    document.getElementById('hostGameButtons').style.display = 'flex';
-    document.getElementById('btnHostEndGame').style.display = 'block';
-    document.getElementById('btnHostToLobby').style.display = 'block';
-    document.getElementById('clientGameButtons').style.display = 'none';
+    if (app.players.length > 0) el.btnHostNext.textContent = `Nächster: ${app.players[(app.currentIndex + 1) % app.players.length].name}`;
+    document.getElementById('hostGameButtons').style.display = 'flex'; document.getElementById('btnHostEndGame').style.display = 'block'; document.getElementById('btnHostToLobby').style.display = 'block'; document.getElementById('clientGameButtons').style.display = 'none';
   } else {
-    el.btnHostNext.style.display = 'none';
-    document.getElementById('hostGameButtons').style.display = 'none';
-    document.getElementById('clientGameButtons').style.display = 'flex';
-    el.btnLeaveGame.style.display = isMyTurn ? 'none' : 'block';
+    el.btnHostNext.style.display = 'none'; document.getElementById('hostGameButtons').style.display = 'none'; document.getElementById('clientGameButtons').style.display = 'flex'; el.btnLeaveGame.style.display = isMyTurn ? 'none' : 'block';
   }
 }
 
-el.nameInput.value = getSavedName();
 function attachClick(elem, handler) {
   let handled = false;
-  elem.addEventListener('touchend', (e) => { if (elem.disabled) return; e.preventDefault(); if (handled) return; handled = true; setTimeout(() => { handled = false; }, 500); handler(e); }, { passive: false });
-  elem.addEventListener('click', (e) => { if (elem.disabled) return; if (handled) return; handled = true; setTimeout(() => { handled = false; }, 500); handler(e); });
+  elem.addEventListener('touchend', (e) => { e.preventDefault(); if (handled) return; handled = true; setTimeout(() => { handled = false; }, 400); handler(e); }, { passive: false });
+  elem.addEventListener('click', (e) => { if (handled) return; handled = true; setTimeout(() => { handled = false; }, 400); handler(e); });
 }
 
-attachClick(el.btnCreate, () => { const name = el.nameInput.value.trim(); if (!name) { showStatus('Bitte gib einen Namen ein.'); el.nameInput.focus(); return; } saveName(name); ensureAudio(); createRoom(); });
-attachClick(el.btnJoin, () => { const name = el.nameInput.value.trim(); const code = el.codeInput.value.trim().toUpperCase(); if (!name) { showStatus('Bitte gib einen Namen ein.'); el.nameInput.focus(); return; } if (code.length !== 4) { showStatus('Bitte 4-stelligen Code eingeben.'); el.codeInput.focus(); return; } saveName(name); ensureAudio(); joinRoom(code); });
-
-el.codeInput.addEventListener('input', (e) => { e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4); });
-
-// Lobby-Buttons Event Handler
-attachClick(el.btnOpenTimeInput, () => { promptTimeInput(); });
-attachClick(el.btnOpenSoundModal, () => { el.soundModal.style.display = 'flex'; });
-attachClick(el.btnCloseSoundModal, () => { saveSoundSettings(); el.soundModal.style.display = 'none'; });
-
-attachClick(el.btnToggleQR, () => {
-    const isHidden = el.qrcodeWrapper.style.display === 'none';
-    el.qrcodeWrapper.style.display = isHidden ? 'flex' : 'none';
+attachClick(el.btnCreate, () => { const n = el.nameInput.value.trim(); if (!n) return; saveName(n); createRoom(); });
+attachClick(el.btnJoin, () => { const n = el.nameInput.value.trim(); const c = el.codeInput.value.trim().toUpperCase(); if (!n || c.length !== 4) return; saveName(n); joinRoom(c); });
+attachClick(el.btnOpenTime, () => { if (!app.isHost) return; const i = prompt("Zeit in Minuten:", app.duration/60); if(i) { app.duration = Math.max(10, Math.round(parseFloat(i.replace(',','.'))*60)); publishState(); renderLobby(); } });
+attachClick(el.btnOpenSound, () => {
+  document.getElementById('soundHalftime').value = app.soundSettings.halftime;
+  document.getElementById('sound30s').value = app.soundSettings.thirtySec;
+  document.getElementById('sound10s').value = app.soundSettings.tenSec;
+  document.getElementById('soundCountdown').checked = app.soundSettings.countdown;
+  document.getElementById('soundSwitch').value = app.soundSettings.switch;
+  document.getElementById('soundFinished').checked = app.soundSettings.finished;
+  el.modalSound.style.display = 'flex';
 });
-
-attachClick(el.btnToggleAddLocal, () => {
-    const isHidden = el.addLocalPlayerBox.style.display === 'none';
-    el.addLocalPlayerBox.style.display = isHidden ? 'block' : 'none';
-    if (isHidden) el.localPlayerInput.focus();
+attachClick(el.btnCloseSound, () => {
+  app.soundSettings.halftime = document.getElementById('soundHalftime').value;
+  app.soundSettings.thirtySec = document.getElementById('sound30s').value;
+  app.soundSettings.tenSec = document.getElementById('sound10s').value;
+  app.soundSettings.countdown = document.getElementById('soundCountdown').checked;
+  app.soundSettings.switch = document.getElementById('soundSwitch').value;
+  app.soundSettings.finished = document.getElementById('soundFinished').checked;
+  el.modalSound.style.display = 'none'; publishState();
 });
-
-attachClick(el.btnStartGame, () => { 
-    ensureAudio(); 
-    if (app.gameStarted) { setScreen('game'); renderGame(); } else { hostStartGame(); }
-});
-
-attachClick(el.btnLeaveLobbyTop, () => { promptLeaveRoom(); });
+attachClick(el.btnToggleQR, () => { el.qrcodeWrapper.style.display = el.qrcodeWrapper.style.display === 'none' ? 'flex' : 'none'; });
+attachClick(el.btnToggleAddLocal, () => { el.addLocalPlayerBox.style.display = el.addLocalPlayerBox.style.display === 'none' ? 'block' : 'none'; if(el.addLocalPlayerBox.style.display === 'block') el.localPlayerInput.focus(); });
 attachClick(el.btnAddLocalPlayer, () => { hostAddLocalPlayer(); });
-el.localPlayerInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); hostAddLocalPlayer(); } });
-attachClick(el.btnNext, () => { if (!app.gameStarted) return; const cur = app.players[app.currentIndex]; if (!cur || cur.peerId !== app.myPeerId) return; vibrate([50]); if (app.isHost) { advanceTurn(); } else { publishAction({ type: 'next' }); } });
-attachClick(el.btnHostNext, () => { if (app.isHost && app.gameStarted) { vibrate([50]); advanceTurn(); } });
-
-attachClick(el.btnHostEndGame, () => { if (app.isHost) hostResetGame(); });
-attachClick(el.btnHostToLobby, () => { if (app.isHost) { setScreen('lobby'); renderLobby(); } });
-attachClick(el.btnLeaveGame, () => { promptLeaveRoom(); });
-
-window.addEventListener('beforeunload', () => {
-  if (app.roomCode) {
-      if (app.isHost) {
-          const snapshot = { closed: true };
-          hostConnections.forEach(c => { if(c.open) c.send({ type: 'state', state: snapshot }); });
-      } else {
-          if (clientConnToHost && clientConnToHost.open) {
-              clientConnToHost.send({ type: 'leave', from: app.myPeerId, ts: Date.now() });
-          }
-      }
-  }
-});
-
-loadSoundSettings();
+attachClick(el.btnStartGame, () => { if (app.gameStarted) { setScreen('game'); renderGame(); } else { hostStartGame(); } });
+attachClick(el.btnLeaveLobbyTop, promptLeaveRoom);
+attachClick(el.btnNext, () => { advanceTurn(); });
+attachClick(el.btnHostNext, () => { advanceTurn(); });
+attachClick(el.btnHostEndGame, hostResetGame);
+attachClick(el.btnHostToLobby, () => { setScreen('lobby'); renderLobby(); });
+attachClick(el.btnLeaveGame, promptLeaveRoom);
 requestAnimationFrame(tick);
 </script>
 </body>
